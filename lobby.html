@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lobby – Connect With Auraa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:#000;
+  overflow:hidden;
+  color:white;
+}
+
+/* ===== FLOATING HEARTS (SINGLE COLOR) ===== */
+.heart{
+  position:absolute;
+  bottom:-30px;
+  color:#ff5fbf;
+  font-size:20px;
+  animation:floatUp linear infinite;
+  pointer-events:none;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:0;}
+  20%{opacity:1;}
+  to{transform:translateY(-120vh);opacity:0;}
+}
+
+/* ===== TITLE ===== */
+.page-title{
+  position:absolute;
+  top:25px;
+  left:60%;
+  transform:translateX(-50%);
+  font-family:'Playfair Display',serif;
+  font-size:42px;
+  letter-spacing:4px;
+  color:#ffb3e6;
+  text-shadow:0 0 15px #ff5fbf,0 0 35px #ff5fbf;
+  z-index:10;
+}
+
+/* ===== LAYOUT ===== */
+.wrapper{
+  display:flex;
+  width:100%;
+  height:100%;
+}
+
+/* LEFT IMAGE */
+.left{
+  width:50%;
+  height:100%;
+}
+.left img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* RIGHT CONTENT */
+.right{
+  width:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at top,#3a004d,#000);
+}
+
+/* CARD */
+.card{
+  width:360px;
+  background:#2c0b4c;
+  padding:30px;
+  border-radius:25px;
+  box-shadow:0 0 35px rgba(255,95,191,.45);
+}
+
+.card h2{
+  text-align:center;
+  color:#ff5fbf;
+  margin-bottom:20px;
+}
+
+/* INPUTS */
+label{
+  display:block;
+  margin:10px 0 6px;
+  font-size:14px;
+  color:#ccc;
+}
+
+input,select{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#3a0055;
+  color:white;
+  font-size:15px;
+}
+
+/* BUTTONS */
+.action-btn{
+  margin-top:14px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  color:white;
+  transition:.3s;
+}
+
+.create{
+  background:linear-gradient(135deg,#ff5fbf,#8e44ff);
+}
+.join{
+  background:linear-gradient(135deg,#4dd0ff,#1b75ff);
+}
+
+.action-btn:hover{
+  transform:scale(1.07);
+  box-shadow:0 0 25px rgba(255,255,255,.4);
+}
+
+/* ===== POPUP ===== */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:50;
+}
+
+.popup-box{
+  width:330px;
+  background:#2c0b4c;
+  padding:25px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 0 30px rgba(255,95,191,.5);
+}
+
+.popup-box h3{
+  color:#ff5fbf;
+  margin-bottom:10px;
+}
+
+.room-code{
+  font-size:30px;
+  letter-spacing:4px;
+  background:#3a0055;
+  padding:14px;
+  border-radius:18px;
+  margin:15px 0;
+}
+
+.popup-box input{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#3a0055;
+  color:white;
+  margin-bottom:12px;
+}
+
+.popup-btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  color:white;
+  background:linear-gradient(135deg,#ff5fbf,#8e44ff);
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .wrapper{flex-direction:column;}
+  .left,.right{width:100%;height:50%;}
+  .page-title{left:50%;font-size:28px;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- FLOATING HEARTS -->
+<script>
+for(let i=0;i<18;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=5+Math.random()*5+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+<div class="page-title">CONNECT WITH AURAA</div>
+
+<div class="wrapper">
+
+  <!-- LEFT IMAGE -->
+  <div class="left">
+    <img src="lobby-img.jpg" alt="Friendship">
+  </div>
+
+  <!-- RIGHT DETAILS -->
+  <div class="right">
+    <div class="card">
+      <h2>Your Details</h2>
+
+      <label>Name</label>
+      <input id="name" placeholder="Enter your name">
+
+      <label>Gender</label>
+      <select id="gender">
+        <option value="">Select gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <label>Relationship</label>
+      <select id="relation">
+        <option value="">Select relationship</option>
+        <option>Best Friends</option>
+        <option>Crush</option>
+        <option>Lovers</option>
+        <option>Soulmates</option>
+      </select>
+
+      <button class="action-btn create" onclick="openCreate()">Create Room ✨</button>
+      <button class="action-btn join" onclick="openJoin()">Join Room 🎮</button>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <h3 id="popupTitle"></h3>
+    <div class="room-code" id="roomCode">AURAA7</div>
+    <input id="joinCode" placeholder="Enter Room Code">
+    <button class="popup-btn" onclick="continueGame()">Continue ❤️</button>
+  </div>
+</div>
+
+<script>
+const popup=document.getElementById("popup");
+const popupTitle=document.getElementById("popupTitle");
+const roomCode=document.getElementById("roomCode");
+const joinCode=document.getElementById("joinCode");
+
+function openCreate(){
+  popupTitle.innerText="Room Created 🎉";
+  roomCode.style.display="block";
+  joinCode.style.display="none";
+  popup.style.display="flex";
+}
+
+function openJoin(){
+  popupTitle.innerText="Join Room 🔗";
+  roomCode.style.display="none";
+  joinCode.style.display="block";
+  popup.style.display="flex";
+}
+
+function continueGame(){
+  if(!name.value || !gender.value || !relation.value){
+    alert("Please fill all details ❤️");
+    return;
+  }
+  popup.style.display="none";
+  window.location.href="food.html";
+}
+</script>
+
+</body>
+</html>
