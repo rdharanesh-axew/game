@@ -282,6 +282,7 @@ function generateRoomCode(){
   return "AUR" + Math.floor(1000 + Math.random()*9000);
 }
 
+/* CREATE ROOM */
 function openCreate(){
   if(
     nameInput.value.trim()==="" ||
@@ -294,6 +295,9 @@ function openCreate(){
 
   const code = generateRoomCode();
 
+  localStorage.setItem("name", nameInput.value.trim());
+  localStorage.setItem("gender", genderInput.value);
+  localStorage.setItem("relation", relationInput.value);
   localStorage.setItem("roomCode", code);
   localStorage.setItem("playerId", "player1");
 
@@ -305,6 +309,7 @@ function openCreate(){
   popup.style.display = "flex";
 }
 
+/* JOIN ROOM */
 function openJoin(){
   popupTitle.innerText = "Join Room 🔗";
   roomCodeBox.style.display = "none";
@@ -312,28 +317,26 @@ function openJoin(){
   popup.style.display = "flex";
 }
 
+/* CONTINUE */
 function continueGame(){
-  let code = roomCodeBox.innerText;
-
   if(joinCodeInput.style.display === "block"){
     if(joinCodeInput.value.trim()===""){
       alert("Enter room code ❤️");
       return;
     }
-    code = joinCodeInput.value.trim();
-    localStorage.setItem("playerId","player2");
+    localStorage.setItem("roomCode", joinCodeInput.value.trim());
+    localStorage.setItem("playerId", "player2");
   }
 
-  localStorage.setItem("roomCode", code);
+  localStorage.setItem("name", nameInput.value.trim());
+  localStorage.setItem("gender", genderInput.value);
+  localStorage.setItem("relation", relationInput.value);
 
-  window.location.href = "./game.html";
-
+  window.location.href = "waiting.html";
 }
-
-
-
-
 </script>
+
+
 
 </body>
 </html>
