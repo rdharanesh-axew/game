@@ -121,6 +121,7 @@ body{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+  
 // 🔥 Firebase config (replace with yours)
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
@@ -160,7 +161,24 @@ for(let i=0;i<12;i++){
   h.style.animationDuration=4+Math.random()*5+"s";
   document.body.appendChild(h);
 }
+
 </script>
+<h1>Waiting for your partner ❤️</h1>
+<p id="status">Waiting...</p>
+
+<script>
+let count = localStorage.getItem("players") || 1;
+count++;
+localStorage.setItem("players", count);
+
+if(count == 2){
+  document.getElementById("status").innerText = "Partner joined! ❤️";
+  setTimeout(()=>{
+    window.location.href = "game.html";
+  },2000);
+}
+</script>
+
 
 </body>
 </html>

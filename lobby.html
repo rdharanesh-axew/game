@@ -268,33 +268,71 @@ for(let i=0;i<18;i++){
 </div>
 
 <script>
-const popup=document.getElementById("popup");
-const popupTitle=document.getElementById("popupTitle");
-const roomCode=document.getElementById("roomCode");
-const joinCode=document.getElementById("joinCode");
+
+const popup = document.getElementById("popup");
+const popupTitle = document.getElementById("popupTitle");
+const roomCodeBox = document.getElementById("roomCode");
+const joinCodeInput = document.getElementById("joinCode");
+
+const nameInput = document.getElementById("name");
+const genderInput = document.getElementById("gender");
+const relationInput = document.getElementById("relation");
+
+function generateRoomCode(){
+  return "AUR" + Math.floor(1000 + Math.random()*9000);
+}
 
 function openCreate(){
-  popupTitle.innerText="Room Created 🎉";
-  roomCode.style.display="block";
-  joinCode.style.display="none";
-  popup.style.display="flex";
-}
-
-function openJoin(){
-  popupTitle.innerText="Join Room 🔗";
-  roomCode.style.display="none";
-  joinCode.style.display="block";
-  popup.style.display="flex";
-}
-
-function continueGame(){
-  if(!name.value || !gender.value || !relation.value){
+  if(
+    nameInput.value.trim()==="" ||
+    genderInput.value==="" ||
+    relationInput.value===""
+  ){
     alert("Please fill all details ❤️");
     return;
   }
-  popup.style.display="none";
-  window.location.href="food.html";
+
+  const code = generateRoomCode();
+
+  localStorage.setItem("roomCode", code);
+  localStorage.setItem("playerId", "player1");
+
+  popupTitle.innerText = "Room Created 🎉";
+  roomCodeBox.innerText = code;
+  roomCodeBox.style.display = "block";
+  joinCodeInput.style.display = "none";
+
+  popup.style.display = "flex";
 }
+
+function openJoin(){
+  popupTitle.innerText = "Join Room 🔗";
+  roomCodeBox.style.display = "none";
+  joinCodeInput.style.display = "block";
+  popup.style.display = "flex";
+}
+
+function continueGame(){
+  let code = roomCodeBox.innerText;
+
+  if(joinCodeInput.style.display === "block"){
+    if(joinCodeInput.value.trim()===""){
+      alert("Enter room code ❤️");
+      return;
+    }
+    code = joinCodeInput.value.trim();
+    localStorage.setItem("playerId","player2");
+  }
+
+  localStorage.setItem("roomCode", code);
+
+  window.location.href = "./game.html";
+
+}
+
+
+
+
 </script>
 
 </body>

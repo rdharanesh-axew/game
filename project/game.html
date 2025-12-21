@@ -8,6 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
+.screen{
+  display:none;
+  width:100%;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+
 *{
   margin:0;
   padding:0;
@@ -107,29 +116,48 @@ body{
 </style>
 </head>
 
-<body>
+<body onload="showScreen(1)">
 
-<div class="title">WHICH FOOD DO YOU PREFER? 🍕</div>
-<div class="counter">Question 1 / 10</div>
+<!-- ================= SCREEN 1 : FOOD ================= -->
+<div id="screen1" class="screen">
 
-<div class="game-area">
+  <div class="title">WHICH FOOD DO YOU PREFER? 🍕</div>
+  <div class="counter">Question 1 / 13</div>
 
-  <!-- LEFT FOOD -->
-  <div class="food-card" onclick="selectFood('LEFT')">
-    <img src="food_left.jpg" alt="Food Left">
-    <div class="label">Option A</div>
+  <div class="game-area">
+
+    <div class="food-card" onclick="selectChoice('FOOD_LEFT')">
+      <img src="food_left.jpg">
+      <div class="label">Option A</div>
+    </div>
+
+    <div class="food-card" onclick="selectChoice('FOOD_RIGHT')">
+      <img src="food_right.jpg">
+      <div class="label">Option B</div>
+    </div>
+
   </div>
-
-  <!-- RIGHT FOOD -->
-  <div class="food-card" onclick="selectFood('RIGHT')">
-    <img src="food_right.jpg" alt="Food Right">
-    <div class="label">Option B</div>
-  </div>
-
 </div>
 
+<!-- ================= SCREEN 2 ================= -->
+<div id="screen2" class="screen">
+  <h1>VEHICLE PAGE 🚗</h1>
+</div>
+
+<div id="screen3" class="screen"><h1>PLACE PAGE 🌍</h1></div>
+<div id="screen4" class="screen"><h1>MOVIE PAGE 🎬</h1></div>
+<div id="screen5" class="screen"><h1>MUSIC PAGE 🎵</h1></div>
+<div id="screen6" class="screen"><h1>SCHOOL / COLLEGE 🎓</h1></div>
+<div id="screen7" class="screen"><h1>ICE CREAM / CAKE 🍰</h1></div>
+<div id="screen8" class="screen"><h1>TEMPLE / PARK 🛕</h1></div>
+<div id="screen9" class="screen"><h1>NIGHT OUT 🌙</h1></div>
+<div id="screen10" class="screen"><h1>COFFEE / DINNER ☕</h1></div>
+<div id="screen11" class="screen"><h1>PAGE 11</h1></div>
+<div id="screen12" class="screen"><h1>PAGE 12</h1></div>
+<div id="screen13" class="screen"><h1>RESULT PAGE ❤️</h1></div>
+
 <script>
-/* ================= SESSION SAFE ================= */
+/* ================= SESSION ================= */
 let roomCode = localStorage.getItem("roomCode");
 let playerId = localStorage.getItem("playerId");
 
@@ -143,33 +171,48 @@ if(!playerId){
   localStorage.setItem("playerId", playerId);
 }
 
-/* ================= GAME LOGIC ================= */
-let selected = false;
+/* ================= GAME ENGINE ================= */
+let currentStep = 1;
+const totalSteps = 13;
+let locked = false;
 
-function selectFood(choice){
-  if(selected) return;
-  selected = true;
+function showScreen(n){
+  document.querySelectorAll(".screen").forEach(s=>{
+    s.style.display="none";
+  });
+  document.getElementById("screen"+n).style.display="flex";
+}
 
-  // click sound
-  const clickSound = new Audio("click.mp3");
-  clickSound.play().catch(()=>{});
+function nextStep(){
+  if(currentStep < totalSteps){
+    currentStep++;
+    showScreen(currentStep);
+  }
+}
+
+/* ================= CHOICE ================= */
+function selectChoice(choice){
+  if(locked) return;
+  locked = true;
+
+  const click = new Audio("click.mp3");
+  click.play().catch(()=>{});
 
   console.log("ROOM:", roomCode);
   console.log("PLAYER:", playerId);
   console.log("CHOICE:", choice);
 
-  /* Firebase later add here
-  db.ref(`rooms/${roomCode}/food`).push({
+  /* Firebase later
+  db.ref(`rooms/${roomCode}/choices/${currentStep}`).push({
     player: playerId,
-    choice: choice,
-    time: Date.now()
+    choice: choice
   });
   */
 
-  // move to vehicle page
   setTimeout(()=>{
-    window.location.href="vehicle.html";
-  },800);
+    locked = false;
+    nextStep();
+  },700);
 }
 
 /* ================= FLOATING HEARTS ================= */
