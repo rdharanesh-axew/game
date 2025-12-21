@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Out</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:radial-gradient(circle at top,#3a004d,#000);
+  overflow:hidden;
+  color:white;
+}
+
+/* QUESTION TEXT */
+.question-text{
+  text-align:center;
+  margin-top:35px;
+  font-size:36px;
+  font-weight:700;
+  color:#ff5fbf;
+  text-shadow:0 0 20px #ff5fbf;
+}
+
+/* COUNTER */
+.counter{
+  text-align:center;
+  margin-top:6px;
+  color:#ccc;
+  font-size:15px;
+}
+
+/* GAME AREA */
+.game-area{
+  height:78%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:90px;
+}
+
+/* OPTION CARD */
+.option-card{
+  width:340px;
+  height:460px;
+  border-radius:30px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.4s;
+  position:relative;
+  box-shadow:0 0 40px rgba(255,95,191,.5);
+}
+
+/* IMAGE – FULL COVER (NO BLACK BG) */
+.option-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;   /* 🔥 FIX */
+}
+
+.option-card:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 60px #ff5fbf;
+}
+
+/* LABEL */
+.label{
+  position:absolute;
+  bottom:20px;
+  width:100%;
+  text-align:center;
+  font-size:24px;
+  font-weight:600;
+  text-shadow:0 0 14px black;
+}
+
+/* FLOATING HEARTS */
+.heart{
+  position:absolute;
+  bottom:-30px;
+  color:#ff5fbf;
+  font-size:22px;
+  animation:floatUp linear infinite;
+  pointer-events:none;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-120vh);opacity:0;}
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .game-area{
+    flex-direction:column;
+    gap:40px;
+  }
+  .option-card{
+    width:90%;
+    height:380px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="question-text">Which one do you prefer?</div>
+<div class="counter">Question 9 / 10 ❤️</div>
+
+<div class="game-area">
+
+  <!-- NIGHT OUT -->
+  <div class="option-card" onclick="chooseOption('Night Out')">
+    <img src="night.jpg">
+    <div class="label">Night Out 🌙</div>
+  </div>
+
+  <!-- MORNING OUT -->
+  <div class="option-card" onclick="chooseOption('Morning Out')">
+    <img src="morning.jpg">
+    <div class="label">Morning Out 🌅</div>
+  </div>
+
+</div>
+
+<script>
+function chooseOption(choice){
+  console.log("Selected:", choice);
+
+  // Existing game flow – untouched
+  window.location.href="result.html";
+}
+
+/* FLOATING HEARTS */
+for(let i=0;i<18;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=4+Math.random()*6+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kovil or Park</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:radial-gradient(circle at top,#3a004d,#000);
+  overflow:hidden;
+  color:white;
+}
+
+/* TITLE */
+.title{
+  text-align:center;
+  margin-top:30px;
+  font-size:42px;
+  font-weight:600;
+  color:#ff5fbf;
+  text-shadow:0 0 20px #ff5fbf;
+}
+
+/* QUESTION COUNT */
+.counter{
+  position:absolute;
+  top:30px;
+  right:30px;
+  background:rgba(255,255,255,.12);
+  padding:8px 16px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+/* CENTER TEXT */
+.center-text{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  pointer-events:none;
+}
+
+.center-text .big{
+  font-size:26px;
+  font-weight:600;
+}
+
+.center-text .small{
+  font-size:14px;
+  color:#ccc;
+}
+
+/* GAME AREA */
+.game-area{
+  height:80%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:80px;
+}
+
+/* IMAGE CARD */
+.choice-card{
+  width:320px;
+  height:420px;
+  border-radius:30px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.4s;
+  box-shadow:0 0 35px rgba(255,95,191,.45);
+}
+
+.choice-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.choice-card:hover{
+  transform:scale(1.12);
+  box-shadow:0 0 55px #ff5fbf;
+}
+
+/* FLOATING HEARTS */
+.heart{
+  position:absolute;
+  bottom:-30px;
+  color:#ff5fbf;
+  font-size:22px;
+  animation:floatUp linear infinite;
+  pointer-events:none;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-120vh);opacity:0;}
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .game-area{
+    flex-direction:column;
+    gap:35px;
+  }
+  .choice-card{
+    width:85%;
+    height:260px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="title">WHICH ONE DO YOU PREFER?</div>
+<div class="counter">Question 8 / 10</div>
+
+<div class="center-text">
+  <div class="big">🛕 KOVIL OR 🌳 PARK?</div>
+  <div class="small">Choose what you like more</div>
+</div>
+
+<div class="game-area">
+
+  <!-- KOVIL -->
+  <div class="choice-card" onclick="choose('KOVIL')">
+    <img src="kovil.jpg" alt="Kovil">
+  </div>
+
+  <!-- PARK -->
+  <div class="choice-card" onclick="choose('PARK')">
+    <img src="park.jpg" alt="Park">
+  </div>
+
+</div>
+
+<script>
+/* ====== CHOICE LOGIC ====== */
+function choose(choice){
+  console.log("Selected:", choice);
+
+  // 🔥 Firebase sync (later add pannalaam)
+  /*
+  db.ref("rooms/ROOMCODE/choices").push({
+    player: currentPlayer,
+    answer: choice
+  });
+  */
+
+  alert("You selected " + choice + " ❤️");
+
+  // 🔜 Next page later
+  // window.location.href="nextpage.html";
+}
+
+/* FLOATING HEARTS */
+for(let i=0;i<22;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=4+Math.random()*6+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+</body>
+</html>

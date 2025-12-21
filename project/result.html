@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Result</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:radial-gradient(circle at top,#3a004d,#000);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  color:white;
+}
+
+/* MAIN CARD */
+.result-card{
+  width:90%;
+  max-width:520px;
+  background:rgba(255,255,255,.06);
+  border-radius:30px;
+  padding:40px 30px;
+  text-align:center;
+  box-shadow:0 0 60px rgba(255,95,191,.5);
+  animation:pop 1s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.7);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+/* TITLE */
+.title{
+  font-size:36px;
+  font-weight:700;
+  color:#ff5fbf;
+  text-shadow:0 0 25px #ff5fbf;
+  margin-bottom:10px;
+}
+
+/* HEART ICON */
+.big-heart{
+  font-size:70px;
+  animation:pulse 1.5s infinite;
+  margin:15px 0;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.2)}
+  100%{transform:scale(1)}
+}
+
+/* SCORE */
+.score{
+  font-size:22px;
+  margin-top:10px;
+  color:#ddd;
+}
+
+.score span{
+  color:#ff5fbf;
+  font-weight:700;
+}
+
+/* MATCH % */
+.match{
+  font-size:48px;
+  font-weight:700;
+  margin:25px 0;
+  color:#fff;
+  text-shadow:
+    0 0 10px #ff5fbf,
+    0 0 30px #ff5fbf;
+}
+
+/* MESSAGE */
+.message{
+  font-size:18px;
+  margin-bottom:30px;
+  color:#f2f2f2;
+}
+
+/* BUTTONS */
+.btns{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+}
+
+button{
+  padding:12px 26px;
+  border:none;
+  border-radius:25px;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.play{
+  background:#ff5fbf;
+  color:#000;
+}
+
+.play:hover{
+  background:#fff;
+}
+
+.share{
+  background:transparent;
+  border:2px solid #ff5fbf;
+  color:#ff5fbf;
+}
+
+.share:hover{
+  background:#ff5fbf;
+  color:#000;
+}
+
+/* FLOATING HEARTS */
+.heart{
+  position:absolute;
+  bottom:-30px;
+  font-size:20px;
+  color:#ff5fbf;
+  animation:floatUp linear infinite;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-120vh);opacity:0}
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  .title{font-size:30px}
+  .match{font-size:40px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="result-card">
+  <div class="title">Your Love Result 💖</div>
+
+  <div class="big-heart">❤️</div>
+
+  <div class="score">
+    Final Score : <span id="score">0</span> / <span id="total">10</span>
+  </div>
+
+  <div class="match" id="match">0%</div>
+
+  <div class="message" id="message">
+    Loading your beautiful result...
+  </div>
+
+  <div class="btns">
+    <button class="play" onclick="restart()">Play Again</button>
+    <button class="share" onclick="share()">Share</button>
+  </div>
+</div>
+
+<script>
+/* ---------- RESULT LOGIC ---------- */
+
+// example values (Firebase illana localStorage use pannalam)
+let score = Number(localStorage.getItem("score")) || 7;
+let total = Number(localStorage.getItem("total")) || 10;
+
+let percent = Math.round((score / total) * 100);
+
+document.getElementById("score").innerText = score;
+document.getElementById("total").innerText = total;
+document.getElementById("match").innerText = percent + "%";
+
+/* MESSAGE BASED ON MATCH */
+let msg = "";
+if(percent >= 90){
+  msg = "Perfect match 💞 Soulmates vibes!";
+}else if(percent >= 70){
+  msg = "Strong connection 💖 Beautiful bond!";
+}else if(percent >= 50){
+  msg = "Good match 😊 With little effort, magic!";
+}else{
+  msg = "Still cute 😄 Love grows slowly!";
+}
+document.getElementById("message").innerText = msg;
+
+/* ---------- BUTTONS ---------- */
+function restart(){
+  window.location.href="index.html";
+}
+
+function share(){
+  alert("Screenshot this page & share with your partner 💕");
+}
+
+/* ---------- FLOATING HEARTS ---------- */
+for(let i=0;i<20;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=4+Math.random()*6+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+</body>
+</html>
