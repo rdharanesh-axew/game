@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vehicle Choice</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+  height:100vh;
+  background:radial-gradient(circle at top,#3a004d,#000);
+  overflow:hidden;
+  color:white;
+}
+
+/* TITLE */
+.title{
+  text-align:center;
+  margin-top:20px;
+  font-size:46px;
+  font-weight:600;
+  color:#ff5fbf;
+  text-shadow:0 0 25px #ff5fbf;
+}
+
+/* SUB TEXT */
+.sub{
+  text-align:center;
+  font-size:16px;
+  color:#ccc;
+}
+
+/* TIMER */
+.timer{
+  position:absolute;
+  top:20px;
+  left:30px;
+  background:#3a0055;
+  padding:10px 18px;
+  border-radius:20px;
+  font-size:16px;
+  box-shadow:0 0 15px #ff5fbf;
+}
+
+/* QUESTION COUNT */
+.counter{
+  position:absolute;
+  top:20px;
+  right:30px;
+  background:#3a0055;
+  padding:10px 18px;
+  border-radius:20px;
+  font-size:14px;
+  box-shadow:0 0 15px #ff5fbf;
+}
+
+/* GAME AREA */
+.game-area{
+  height:80%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:90px;
+}
+
+/* CARD */
+.card{
+  width:320px;
+  height:440px;
+  border-radius:40px;
+  overflow:hidden;
+  cursor:pointer;
+  position:relative;
+  transition:.4s;
+  box-shadow:0 0 35px rgba(255,95,191,.45);
+}
+
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.card:hover{
+  transform:scale(1.12);
+  box-shadow:0 0 60px #ff5fbf;
+}
+
+.card.selected{
+  outline:5px solid #ff5fbf;
+  transform:scale(1.15);
+}
+
+/* LABEL */
+.label{
+  position:absolute;
+  bottom:18px;
+  width:100%;
+  text-align:center;
+  font-size:26px;
+  font-weight:600;
+  text-shadow:0 0 12px black;
+}
+
+/* FLOATING HEARTS */
+.heart{
+  position:absolute;
+  bottom:-30px;
+  color:#ff5fbf;
+  font-size:22px;
+  animation:floatUp linear infinite;
+  pointer-events:none;
+}
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-120vh);opacity:0;}
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .game-area{flex-direction:column;gap:40px;}
+  .card{width:260px;height:360px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="timer">⏱ <span id="time">10</span>s</div>
+<div class="counter">2 / 10</div>
+
+<div class="title">VEHICLE</div>
+<div class="sub">Pick the same as your friend 🚗❤️</div>
+
+<div class="game-area">
+  <div class="card" onclick="choose(1)">
+    <img src="vehicle1.jpg">
+    <div class="label">Option A</div>
+  </div>
+
+  <div class="card" onclick="choose(2)">
+    <img src="vehicle2.jpg">
+    <div class="label">Option B</div>
+  </div>
+</div>
+
+<!-- AUDIO -->
+<audio id="clickSound" src="click.mp3"></audio>
+<audio id="timerSound" src="timer.mp3"></audio>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* GAME DATA */
+const ROOM = localStorage.getItem("roomCode");
+const PLAYER = localStorage.getItem("playerId");
+let choice = null;
+
+/* TIMER */
+let time = 10;
+const timerEl = document.getElementById("time");
+const timerSound = document.getElementById("timerSound");
+
+const timer = setInterval(()=>{
+  time--;
+  timerEl.innerText = time;
+
+  if(time === 3) timerSound.play();
+  if(time <= 0){
+    clearInterval(timer);
+    autoSubmit();
+  }
+},1000);
+
+/* CHOOSE */
+function choose(n){
+  if(choice) return;
+  document.getElementById("clickSound").play();
+
+  choice = n === 1 ? "A" : "B";
+  document.querySelectorAll(".card").forEach(c=>c.classList.remove("selected"));
+  document.querySelectorAll(".card")[n-1].classList.add("selected");
+
+  db.ref(`rooms/${ROOM}/players/${PLAYER}`).set({choice});
+  waitFriend();
+}
+
+/* AUTO */
+function autoSubmit(){
+  if(!choice){
+    choice = "NONE";
+    db.ref(`rooms/${ROOM}/players/${PLAYER}`).set({choice});
+  }
+  waitFriend();
+}
+
+/* WAIT */
+function waitFriend(){
+  db.ref(`rooms/${ROOM}/players`).once("value",snap=>{
+    const p = snap.val();
+    if(p?.player1?.choice && p?.player2?.choice){
+      setTimeout(()=>{
+        window.location.href="next-question.html";
+      },1200);
+    }
+  });
+}
+
+/* HEARTS */
+for(let i=0;i<18;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=4+Math.random()*6+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+</body>
+</html>
