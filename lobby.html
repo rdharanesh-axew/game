@@ -22,7 +22,7 @@ body{
   color:white;
 }
 
-/* ===== FLOATING HEARTS (SINGLE COLOR) ===== */
+/* FLOATING HEARTS */
 .heart{
   position:absolute;
   bottom:-30px;
@@ -31,14 +31,13 @@ body{
   animation:floatUp linear infinite;
   pointer-events:none;
 }
-
 @keyframes floatUp{
   from{transform:translateY(0);opacity:0;}
   20%{opacity:1;}
   to{transform:translateY(-120vh);opacity:0;}
 }
 
-/* ===== TITLE ===== */
+/* TITLE */
 .page-title{
   position:absolute;
   top:25px;
@@ -52,25 +51,20 @@ body{
   z-index:10;
 }
 
-/* ===== LAYOUT ===== */
+/* LAYOUT */
 .wrapper{
   display:flex;
   width:100%;
   height:100%;
 }
 
-/* LEFT IMAGE */
-.left{
-  width:50%;
-  height:100%;
-}
+.left{ width:50%; }
 .left img{
   width:100%;
   height:100%;
   object-fit:cover;
 }
 
-/* RIGHT CONTENT */
 .right{
   width:50%;
   display:flex;
@@ -79,7 +73,6 @@ body{
   background:radial-gradient(circle at top,#3a004d,#000);
 }
 
-/* CARD */
 .card{
   width:360px;
   background:#2c0b4c;
@@ -94,7 +87,6 @@ body{
   margin-bottom:20px;
 }
 
-/* INPUTS */
 label{
   display:block;
   margin:10px 0 6px;
@@ -112,7 +104,6 @@ input,select{
   font-size:15px;
 }
 
-/* BUTTONS */
 .action-btn{
   margin-top:14px;
   width:100%;
@@ -132,13 +123,12 @@ input,select{
 .join{
   background:linear-gradient(135deg,#4dd0ff,#1b75ff);
 }
-
 .action-btn:hover{
   transform:scale(1.07);
   box-shadow:0 0 25px rgba(255,255,255,.4);
 }
 
-/* ===== POPUP ===== */
+/* POPUP */
 .popup{
   position:fixed;
   inset:0;
@@ -148,7 +138,6 @@ input,select{
   align-items:center;
   z-index:50;
 }
-
 .popup-box{
   width:330px;
   background:#2c0b4c;
@@ -157,12 +146,10 @@ input,select{
   text-align:center;
   box-shadow:0 0 30px rgba(255,95,191,.5);
 }
-
 .popup-box h3{
   color:#ff5fbf;
   margin-bottom:10px;
 }
-
 .room-code{
   font-size:30px;
   letter-spacing:4px;
@@ -171,7 +158,6 @@ input,select{
   border-radius:18px;
   margin:15px 0;
 }
-
 .popup-box input{
   width:100%;
   padding:12px;
@@ -181,7 +167,6 @@ input,select{
   color:white;
   margin-bottom:12px;
 }
-
 .popup-btn{
   width:100%;
   padding:14px;
@@ -193,19 +178,11 @@ input,select{
   color:white;
   background:linear-gradient(135deg,#ff5fbf,#8e44ff);
 }
-
-/* MOBILE */
-@media(max-width:768px){
-  .wrapper{flex-direction:column;}
-  .left,.right{width:100%;height:50%;}
-  .page-title{left:50%;font-size:28px;}
-}
 </style>
 </head>
 
 <body>
 
-<!-- FLOATING HEARTS -->
 <script>
 for(let i=0;i<18;i++){
   const h=document.createElement("div");
@@ -220,23 +197,20 @@ for(let i=0;i<18;i++){
 <div class="page-title">CONNECT WITH AURAA</div>
 
 <div class="wrapper">
-
-  <!-- LEFT IMAGE -->
   <div class="left">
-    <img src="lobby-img.jpg" alt="Friendship">
+    <img src="lobby-img.jpg">
   </div>
 
-  <!-- RIGHT DETAILS -->
   <div class="right">
     <div class="card">
       <h2>Your Details</h2>
 
       <label>Name</label>
-      <input id="name" placeholder="Enter your name">
+      <input id="name">
 
       <label>Gender</label>
       <select id="gender">
-        <option value="">Select gender</option>
+        <option value="">Select</option>
         <option>Male</option>
         <option>Female</option>
         <option>Other</option>
@@ -244,117 +218,94 @@ for(let i=0;i<18;i++){
 
       <label>Relationship</label>
       <select id="relation">
-        <option value="">Select relationship</option>
+        <option value="">Select</option>
         <option>Best Friends</option>
         <option>Crush</option>
         <option>Lovers</option>
         <option>Soulmates</option>
       </select>
 
-      <button class="action-btn create" onclick="openCreate()">Create Room ✨</button>
-      <button class="action-btn join" onclick="openJoin()">Join Room 🎮</button>
+      <button class="action-btn create" onclick="createRoom()">Create Room ✨</button>
+      <button class="action-btn join" onclick="joinRoom()">Join Room 🎮</button>
     </div>
   </div>
 </div>
 
-<!-- POPUP -->
 <div class="popup" id="popup">
   <div class="popup-box">
     <h3 id="popupTitle"></h3>
-    <div class="room-code" id="roomCode">AURAA7</div>
+    <div class="room-code" id="roomCodeBox"></div>
     <input id="joinCode" placeholder="Enter Room Code">
     <button class="popup-btn" onclick="continueGame()">Continue ❤️</button>
   </div>
 </div>
 
-<script>
-
-const popup = document.getElementById("popup");
-const popupTitle = document.getElementById("popupTitle");
-const roomCodeBox = document.getElementById("roomCode");
-const joinCodeInput = document.getElementById("joinCode");
-
-const nameInput = document.getElementById("name");
-const genderInput = document.getElementById("gender");
-const relationInput = document.getElementById("relation");
-
-function generateRoomCode(){
-  return "AUR" + Math.floor(1000 + Math.random()*9000);
-}
-
-/* CREATE ROOM */
-function openCreate(){
-  if(
-    nameInput.value.trim()==="" ||
-    genderInput.value==="" ||
-    relationInput.value===""
-  ){
-    alert("Please fill all details ❤️");
-    return;
-  }
-
-  const code = generateRoomCode();
-
-  localStorage.setItem("name", nameInput.value.trim());
-  localStorage.setItem("gender", genderInput.value);
-  localStorage.setItem("relation", relationInput.value);
-  localStorage.setItem("roomCode", code);
-  localStorage.setItem("playerId", "player1");
-
-  popupTitle.innerText = "Room Created 🎉";
-  roomCodeBox.innerText = code;
-  roomCodeBox.style.display = "block";
-  joinCodeInput.style.display = "none";
-
-  popup.style.display = "flex";
-}
-
-/* JOIN ROOM */
-function openJoin(){
-  popupTitle.innerText = "Join Room 🔗";
-  roomCodeBox.style.display = "none";
-  joinCodeInput.style.display = "block";
-  popup.style.display = "flex";
-}
-
-/* CONTINUE */
-function continueGame(){
-  if(joinCodeInput.style.display === "block"){
-    if(joinCodeInput.value.trim()===""){
-      alert("Enter room code ❤️");
-      return;
-    }
-    localStorage.setItem("roomCode", joinCodeInput.value.trim());
-    localStorage.setItem("playerId", "player2");
-  }
-
-  localStorage.setItem("name", nameInput.value.trim());
-  localStorage.setItem("gender", genderInput.value);
-  localStorage.setItem("relation", relationInput.value);
-
-  window.location.href = "waiting.html";
-}
-</script>
-
-
-</body>
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "PASTE_YOUR_KEY",
-    authDomain: "PASTE",
-    databaseURL: "PASTE",
-    projectId: "PASTE",
-    storageBucket: "PASTE",
-    messagingSenderId: "PASTE",
-    appId: "PASTE"
-  };
+const firebaseConfig = {
+  apiKey: "PASTE_KEY",
+  authDomain: "PASTE",
+  databaseURL: "PASTE",
+  projectId: "PASTE",
+  appId: "PASTE"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+const popup=document.getElementById("popup");
+const popupTitle=document.getElementById("popupTitle");
+const roomCodeBox=document.getElementById("roomCodeBox");
+const joinCode=document.getElementById("joinCode");
+
+function genCode(){
+  return "AUR"+Math.floor(1000+Math.random()*9000);
+}
+
+function validate(){
+  return name.value && gender.value && relation.value;
+}
+
+function createRoom(){
+  if(!validate()){ alert("Fill all details ❤️"); return; }
+  const code=genCode();
+
+  localStorage.setItem("roomCode",code);
+  localStorage.setItem("playerId","player1");
+
+  db.ref("rooms/"+code).set({
+    players:{
+      player1:{ ready:false }
+    }
+  });
+
+  popupTitle.innerText="Room Created 🎉";
+  roomCodeBox.innerText=code;
+  roomCodeBox.style.display="block";
+  joinCode.style.display="none";
+  popup.style.display="flex";
+}
+
+function joinRoom(){
+  popupTitle.innerText="Join Room 🔗";
+  roomCodeBox.style.display="none";
+  joinCode.style.display="block";
+  popup.style.display="flex";
+}
+
+function continueGame(){
+  if(joinCode.style.display==="block"){
+    if(!joinCode.value){ alert("Enter room code ❤️"); return; }
+    localStorage.setItem("roomCode",joinCode.value);
+    localStorage.setItem("playerId","player2");
+
+    db.ref("rooms/"+joinCode.value+"/players/player2").set({ ready:false });
+  }
+  window.location.href="waiting.html";
+}
 </script>
+
 </body>
 </html>

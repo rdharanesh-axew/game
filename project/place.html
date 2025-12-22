@@ -111,70 +111,54 @@ body{
 <body>
 
 <div class="title">FAVOURITE PLACE 🌍</div>
-<div class="counter">Question 3 / 10</div>
+<div class="counter">Question 3 / 13</div>
 
 <div class="game-area">
 
-  <!-- PLACE 1 -->
   <div class="place-card" onclick="selectPlace('BEACH')">
-    <img src="place_left.jpg" alt="Beach">
+    <img src="place_left.jpg">
     <div class="label">Beach</div>
   </div>
 
-  <!-- PLACE 2 -->
   <div class="place-card" onclick="selectPlace('MOUNTAIN')">
-    <img src="place_right.jpg" alt="Mountain">
+    <img src="place_right.jpg">
     <div class="label">Mountain</div>
   </div>
 
 </div>
 
 <script>
-/* ================= SESSION SAFE ================= */
-let roomCode = localStorage.getItem("roomCode");
-let playerId = localStorage.getItem("playerId");
+/* SESSION SAFE */
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
 
-if(!roomCode){
-  alert("Session expired ❤️ Please join again");
+if(!roomCode || !playerId){
   window.location.href="lobby.html";
 }
 
-/* ================= GAME LOGIC ================= */
-let selected = false;
+/* LOGIC */
+let locked = false;
 
 function selectPlace(choice){
-  if(selected) return;
-  selected = true;
+  if(locked) return;
+  locked = true;
 
-  // click sound
-  const clickSound = new Audio("click.mp3");
-  clickSound.play().catch(()=>{});
+  console.log("ROOM:",roomCode);
+  console.log("PLAYER:",playerId);
+  console.log("PLACE:",choice);
 
-  console.log("ROOM:", roomCode);
-  console.log("PLAYER:", playerId);
-  console.log("PLACE:", choice);
-
-  /* Firebase later add
-  db.ref(`rooms/${roomCode}/place`).push({
-    player: playerId,
-    choice: choice,
-    time: Date.now()
-  });
-  */
-
-  // next page
   setTimeout(()=>{
-    window.location.href="nextpage.html";
-  },800);
+    window.location.href="movie.html";
+  },700);
 }
 
-/* ================= SPARKLES EFFECT ================= */
+/* SPARKLES */
 for(let i=0;i<25;i++){
   const s=document.createElement("div");
   s.className="spark";
   s.style.left=Math.random()*100+"vw";
-  s.style.animationDuration=4+Math.random()*6+"s";
   s.style.top=Math.random()*100+"vh";
+  s.style.animationDuration=4+Math.random()*6+"s";
   document.body.appendChild(s);
 }
 </script>

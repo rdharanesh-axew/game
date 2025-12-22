@@ -100,7 +100,6 @@ body{
   animation:floatUp linear infinite;
   pointer-events:none;
 }
-
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1;}
   to{transform:translateY(-120vh);opacity:0;}
@@ -118,32 +117,23 @@ body{
 
 <body onload="showScreen(1)">
 
-<!-- ================= SCREEN 1 : FOOD ================= -->
+<!-- SCREENS -->
 <div id="screen1" class="screen">
-
   <div class="title">WHICH FOOD DO YOU PREFER? 🍕</div>
   <div class="counter">Question 1 / 13</div>
-
   <div class="game-area">
-
     <div class="food-card" onclick="selectChoice('FOOD_LEFT')">
       <img src="food_left.jpg">
       <div class="label">Option A</div>
     </div>
-
     <div class="food-card" onclick="selectChoice('FOOD_RIGHT')">
       <img src="food_right.jpg">
       <div class="label">Option B</div>
     </div>
-
   </div>
 </div>
 
-<!-- ================= SCREEN 2 ================= -->
-<div id="screen2" class="screen">
-  <h1>VEHICLE PAGE 🚗</h1>
-</div>
-
+<div id="screen2" class="screen"><h1>VEHICLE PAGE 🚗</h1></div>
 <div id="screen3" class="screen"><h1>PLACE PAGE 🌍</h1></div>
 <div id="screen4" class="screen"><h1>MOVIE PAGE 🎬</h1></div>
 <div id="screen5" class="screen"><h1>MUSIC PAGE 🎵</h1></div>
@@ -157,29 +147,21 @@ body{
 <div id="screen13" class="screen"><h1>RESULT PAGE ❤️</h1></div>
 
 <script>
-/* ================= SESSION ================= */
-let roomCode = localStorage.getItem("roomCode");
-let playerId = localStorage.getItem("playerId");
+/* SESSION CHECK */
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
 
-if(!roomCode){
-  alert("Session expired ❤️ Please join again");
+if(!roomCode || !playerId){
   window.location.href="lobby.html";
 }
 
-if(!playerId){
-  playerId = "player1";
-  localStorage.setItem("playerId", playerId);
-}
-
-/* ================= GAME ENGINE ================= */
+/* GAME ENGINE */
 let currentStep = 1;
 const totalSteps = 13;
 let locked = false;
 
 function showScreen(n){
-  document.querySelectorAll(".screen").forEach(s=>{
-    s.style.display="none";
-  });
+  document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
   document.getElementById("screen"+n).style.display="flex";
 }
 
@@ -187,27 +169,20 @@ function nextStep(){
   if(currentStep < totalSteps){
     currentStep++;
     showScreen(currentStep);
+  }else{
+    // ✅ ALL QUESTIONS DONE
+    setTimeout(()=>{
+      window.location.href="waiting.html";
+    },1500);
   }
 }
 
-/* ================= CHOICE ================= */
+/* CHOICE */
 function selectChoice(choice){
   if(locked) return;
   locked = true;
 
-  const click = new Audio("click.mp3");
-  click.play().catch(()=>{});
-
-  console.log("ROOM:", roomCode);
-  console.log("PLAYER:", playerId);
-  console.log("CHOICE:", choice);
-
-  /* Firebase later
-  db.ref(`rooms/${roomCode}/choices/${currentStep}`).push({
-    player: playerId,
-    choice: choice
-  });
-  */
+  console.log("ROOM:",roomCode,"PLAYER:",playerId,"CHOICE:",choice);
 
   setTimeout(()=>{
     locked = false;
@@ -215,7 +190,7 @@ function selectChoice(choice){
   },700);
 }
 
-/* ================= FLOATING HEARTS ================= */
+/* FLOATING HEARTS */
 for(let i=0;i<18;i++){
   const h=document.createElement("div");
   h.className="heart";

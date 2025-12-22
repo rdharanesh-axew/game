@@ -48,7 +48,7 @@ body{
   gap:80px;
 }
 
-/* MOVIE CARD (INCREASED SIZE) */
+/* MOVIE CARD */
 .movie-card{
   width:340px;
   height:460px;
@@ -66,13 +66,12 @@ body{
   object-fit:cover;
 }
 
-/* HOVER */
 .movie-card:hover{
   transform:scale(1.12);
   box-shadow:0 0 65px #ff5fbf;
 }
 
-/* LABEL (FIXED – ALWAYS VISIBLE) */
+/* LABEL */
 .label{
   position:absolute;
   bottom:0;
@@ -117,17 +116,15 @@ body{
 <body>
 
 <div class="title">Favourite Movie 🎬</div>
-<div class="counter">Question 4 / 10</div>
+<div class="counter">Question 4 / 13</div>
 
 <div class="game-area">
 
-  <!-- MOVIE LEFT -->
   <div class="movie-card" onclick="selectMovie('MOVIE_A')">
     <img src="movie_left.jpg">
     <div class="label">Movie A</div>
   </div>
 
-  <!-- MOVIE RIGHT -->
   <div class="movie-card" onclick="selectMovie('MOVIE_B')">
     <img src="movie_right.jpg">
     <div class="label">Movie B</div>
@@ -137,28 +134,40 @@ body{
 
 <script>
 /* SESSION CHECK */
-let roomCode = localStorage.getItem("roomCode");
-if(!roomCode){
-  alert("Session expired ❤️");
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
+
+if(!roomCode || !playerId){
   window.location.href="lobby.html";
 }
 
-/* CLICK LOGIC */
-let selected=false;
+/* CLICK LOCK */
+let locked = false;
+
 function selectMovie(choice){
-  if(selected) return;
-  selected=true;
+  if(locked) return;
+  locked = true;
 
   new Audio("click.mp3").play().catch(()=>{});
 
-  console.log(choice);
+  console.log("ROOM:", roomCode);
+  console.log("PLAYER:", playerId);
+  console.log("MOVIE:", choice);
+
+  /* Firebase later
+  db.ref(`rooms/${roomCode}/movie`).push({
+    player: playerId,
+    choice: choice,
+    time: Date.now()
+  });
+  */
 
   setTimeout(()=>{
-    window.location.href="nextpage.html";
-  },800);
+    window.location.href="music.html";
+  },700);
 }
 
-/* FLOATING HEARTS CREATE */
+/* FLOATING HEARTS */
 for(let i=0;i<22;i++){
   const h=document.createElement("div");
   h.className="heart";

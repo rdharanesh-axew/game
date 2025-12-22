@@ -32,7 +32,7 @@ body{
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* QUESTION COUNT */
+/* COUNTER */
 .counter{
   position:absolute;
   top:30px;
@@ -72,7 +72,7 @@ body{
   gap:80px;
 }
 
-/* IMAGE CARD */
+/* CARD */
 .choice-card{
   width:320px;
   height:420px;
@@ -94,7 +94,7 @@ body{
   box-shadow:0 0 55px #ff5fbf;
 }
 
-/* FLOATING HEARTS */
+/* HEARTS */
 .heart{
   position:absolute;
   bottom:-30px;
@@ -126,7 +126,7 @@ body{
 <body>
 
 <div class="title">WHICH ONE DO YOU PREFER?</div>
-<div class="counter">Question 8 / 10</div>
+<div class="counter">Question 8 / 13</div>
 
 <div class="center-text">
   <div class="big">🛕 KOVIL OR 🌳 PARK?</div>
@@ -135,35 +135,48 @@ body{
 
 <div class="game-area">
 
-  <!-- KOVIL -->
-  <div class="choice-card" onclick="choose('KOVIL')">
-    <img src="kovil.jpg" alt="Kovil">
+  <div class="choice-card" onclick="chooseOption('KOVIL')">
+    <img src="kovil.jpg">
   </div>
 
-  <!-- PARK -->
-  <div class="choice-card" onclick="choose('PARK')">
-    <img src="park.jpg" alt="Park">
+  <div class="choice-card" onclick="chooseOption('PARK')">
+    <img src="park.jpg">
   </div>
 
 </div>
 
 <script>
-/* ====== CHOICE LOGIC ====== */
-function choose(choice){
-  console.log("Selected:", choice);
+/* SESSION CHECK */
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
 
-  // 🔥 Firebase sync (later add pannalaam)
-  /*
-  db.ref("rooms/ROOMCODE/choices").push({
-    player: currentPlayer,
-    answer: choice
+if(!roomCode || !playerId){
+  window.location.href="lobby.html";
+}
+
+/* CLICK LOCK */
+let locked = false;
+
+/* CHOICE */
+function chooseOption(choice){
+  if(locked) return;
+  locked = true;
+
+  console.log("ROOM:",roomCode);
+  console.log("PLAYER:",playerId);
+  console.log("CHOICE:",choice);
+
+  /* Firebase later
+  db.ref(`rooms/${roomCode}/kovilPark`).push({
+    player: playerId,
+    choice: choice,
+    time: Date.now()
   });
   */
 
-  alert("You selected " + choice + " ❤️");
-
-  // 🔜 Next page later
-  // window.location.href="nextpage.html";
+  setTimeout(()=>{
+    window.location.href="school-college.html";
+  },700);
 }
 
 /* FLOATING HEARTS */

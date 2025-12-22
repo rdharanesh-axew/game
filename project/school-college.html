@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Which One Do You Prefer?</title>
+<title>School or College</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -126,7 +126,7 @@ body{
 <body>
 
 <div class="title">WHICH ONE DO YOU PREFER?</div>
-<div class="counter">Question 6 / 10</div>
+<div class="counter">Question 6 / 13</div>
 
 <div class="center-heart">
   <div class="big">❤️ WHICH ONE DO YOU PREFER?</div>
@@ -135,36 +135,39 @@ body{
 
 <div class="game-area">
 
-  <!-- SCHOOL -->
   <div class="choice-card" onclick="choose('SCHOOL')">
-    <img src="school.jpg" alt="School">
+    <img src="school.jpg">
   </div>
 
-  <!-- COLLEGE -->
   <div class="choice-card" onclick="choose('COLLEGE')">
-    <img src="college.jpg" alt="College">
+    <img src="college.jpg">
   </div>
 
 </div>
 
 <script>
-/* ========= SELECTION ========= */
+/* SESSION SAFE */
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
+
+if(!roomCode || !playerId){
+  window.location.href="lobby.html";
+}
+
+/* GAME LOGIC */
+let locked = false;
+
 function choose(choice){
-  console.log("Selected:", choice);
+  if(locked) return;
+  locked = true;
 
-  // 🔥 Firebase logic will come here
-  /*
-    db.ref("rooms/ROOMCODE/choices").push({
-      player: currentPlayer,
-      answer: choice
-    });
-  */
+  console.log("ROOM:",roomCode);
+  console.log("PLAYER:",playerId);
+  console.log("CHOICE:",choice);
 
-  // Temporary test
-  alert("You selected " + choice + " ❤️");
-
-  // 🔜 Later: auto redirect to next page
-  // window.location.href="nextpage.html";
+  setTimeout(()=>{
+    window.location.href="icecream.html";
+  },700);
 }
 
 /* FLOATING HEARTS */

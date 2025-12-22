@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Night Out</title>
+<title>Night or Morning</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -61,11 +61,10 @@ body{
   box-shadow:0 0 40px rgba(255,95,191,.5);
 }
 
-/* IMAGE – FULL COVER (NO BLACK BG) */
 .option-card img{
   width:100%;
   height:100%;
-  object-fit:cover;   /* 🔥 FIX */
+  object-fit:cover;
 }
 
 .option-card:hover{
@@ -116,18 +115,16 @@ body{
 <body>
 
 <div class="question-text">Which one do you prefer?</div>
-<div class="counter">Question 9 / 10 ❤️</div>
+<div class="counter">Question 9 / 13 ❤️</div>
 
 <div class="game-area">
 
-  <!-- NIGHT OUT -->
-  <div class="option-card" onclick="chooseOption('Night Out')">
+  <div class="option-card" onclick="chooseOption('NIGHT')">
     <img src="night.jpg">
     <div class="label">Night Out 🌙</div>
   </div>
 
-  <!-- MORNING OUT -->
-  <div class="option-card" onclick="chooseOption('Morning Out')">
+  <div class="option-card" onclick="chooseOption('MORNING')">
     <img src="morning.jpg">
     <div class="label">Morning Out 🌅</div>
   </div>
@@ -135,11 +132,36 @@ body{
 </div>
 
 <script>
-function chooseOption(choice){
-  console.log("Selected:", choice);
+/* SESSION SAFE */
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
 
-  // Existing game flow – untouched
-  window.location.href="result.html";
+if(!roomCode || !playerId){
+  window.location.href="lobby.html";
+}
+
+/* GAME LOGIC */
+let locked = false;
+
+function chooseOption(choice){
+  if(locked) return;
+  locked = true;
+
+  console.log("ROOM:",roomCode);
+  console.log("PLAYER:",playerId);
+  console.log("CHOICE:",choice);
+
+  /* Firebase later
+  db.ref(`rooms/${roomCode}/nightMorning`).push({
+    player: playerId,
+    choice: choice,
+    time: Date.now()
+  });
+  */
+
+  setTimeout(()=>{
+    window.location.href="coffee-dinner.html";
+  },700);
 }
 
 /* FLOATING HEARTS */

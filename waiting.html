@@ -112,39 +112,57 @@ body{
 
 <button id="readyBtn">I'm Ready ❤️</button>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
-/* ===== LOAD DATA ===== */
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  databaseURL: "YOUR_DB_URL",
+  projectId: "YOUR_PROJECT_ID",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* LOAD DATA */
 const roomCode = localStorage.getItem("roomCode");
 const playerId = localStorage.getItem("playerId");
 
-document.getElementById("roomCodeText").innerText = roomCode || "----";
+document.getElementById("roomCodeText").innerText = roomCode;
 
-/* ===== READY LOGIC ===== */
+/* REGISTER PLAYER */
+db.ref("rooms/"+roomCode+"/players/"+playerId).set(true);
+
+/* READY */
 const statusText = document.getElementById("statusText");
 const readyBtn = document.getElementById("readyBtn");
 const bearArea = document.getElementById("bearArea");
 
 readyBtn.onclick = () => {
-  localStorage.setItem(playerId + "_ready", "true");
+  db.ref("rooms/"+roomCode+"/ready/"+playerId).set(true);
   statusText.innerText = "You are ready ⏳ Waiting...";
 };
 
-/* ===== CHECK BOTH PLAYERS ===== */
-setInterval(() => {
-  const p1 = localStorage.getItem("player1_ready");
-  const p2 = localStorage.getItem("player2_ready");
+/* WATCH PLAYERS */
+db.ref("rooms/"+roomCode+"/ready").on("value", snap=>{
+  const data = snap.val() || {};
+  const count = Object.keys(data).length;
 
-  if (p1 === "true" && p2 === "true") {
+  if(count >= 2){
     statusText.innerText = "Your friend joined 💖";
     bearArea.classList.add("hug");
 
     setTimeout(()=>{
-      window.location.href = "food.html";
+      window.location.href="food.html";
     },3000);
   }
-}, 1000);
+});
 
-/* ===== FLOATING HEARTS ===== */
+/* FLOATING HEARTS */
 for(let i=0;i<12;i++){
   const h=document.createElement("div");
   h.className="heart";
@@ -154,63 +172,6 @@ for(let i=0;i<12;i++){
   document.body.appendChild(h);
 }
 </script>
-</body>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "PASTE_YOUR_KEY",
-    authDomain: "PASTE",
-    databaseURL: "PASTE",
-    projectId: "PASTE",
-    storageBucket: "PASTE",
-    messagingSenderId: "PASTE",
-    appId: "PASTE"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-</script>
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Waiting Room</title>
-</head>
-
-<body>
-  <h1>Waiting...</h1>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "YOUR_KEY",
-      authDomain: "YOUR_DOMAIN",
-      databaseURL: "YOUR_DB_URL",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_BUCKET",
-      messagingSenderId: "YOUR_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-  </script>
-
-  <!-- 🔥 STEP 8 TEST CODE (PLACE HERE) -->
-  <script>
-    db.ref("test").set({
-      status: "connected"
-    });
-  </script>
 
 </body>
-</html>
-
-</body>
-
 </html>

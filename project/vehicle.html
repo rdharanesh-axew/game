@@ -91,7 +91,6 @@ body{
   animation:floatUp linear infinite;
   pointer-events:none;
 }
-
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1;}
   to{transform:translateY(-120vh);opacity:0;}
@@ -110,70 +109,47 @@ body{
 <body>
 
 <div class="title">WHICH VEHICLE DO YOU PREFER? 🚗</div>
-<div class="counter">Question 2 / 10</div>
+<div class="counter">Question 2 / 13</div>
 
 <div class="game-area">
 
-  <!-- LEFT VEHICLE -->
-  <div class="vehicle-card" onclick="selectVehicle('LEFT')">
-    <img src="vehicle_left.jpg" alt="Vehicle Left">
+  <div class="vehicle-card" onclick="selectVehicle('VEHICLE_LEFT')">
+    <img src="vehicle_left.jpg">
     <div class="label">Option A</div>
   </div>
 
-  <!-- RIGHT VEHICLE -->
-  <div class="vehicle-card" onclick="selectVehicle('RIGHT')">
-    <img src="vehicle_right.jpg" alt="Vehicle Right">
+  <div class="vehicle-card" onclick="selectVehicle('VEHICLE_RIGHT')">
+    <img src="vehicle_right.jpg">
     <div class="label">Option B</div>
   </div>
 
 </div>
 
 <script>
-/* ================= SESSION SAFE ================= */
-let roomCode = localStorage.getItem("roomCode");
-let playerId = localStorage.getItem("playerId");
+/* SESSION CHECK */
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
 
-if(!roomCode){
-  alert("Session expired ❤️ Please join again");
+if(!roomCode || !playerId){
   window.location.href="lobby.html";
 }
 
-if(!playerId){
-  playerId = "player1";
-  localStorage.setItem("playerId", playerId);
-}
-
-/* ================= GAME LOGIC ================= */
-let selected = false;
+/* LOGIC */
+let locked = false;
 
 function selectVehicle(choice){
-  if(selected) return;
-  selected = true;
+  if(locked) return;
+  locked = true;
 
-  // click sound
-  const clickSound = new Audio("click.mp3");
-  clickSound.play().catch(()=>{});
+  console.log("ROOM:",roomCode,"PLAYER:",playerId,"CHOICE:",choice);
 
-  console.log("ROOM:", roomCode);
-  console.log("PLAYER:", playerId);
-  console.log("CHOICE:", choice);
-
-  /* Firebase later add here (safe placeholder)
-  db.ref(`rooms/${roomCode}/vehicle`).push({
-    player: playerId,
-    choice: choice,
-    time: Date.now()
-  });
-  */
-
-  // move to next page safely
   setTimeout(()=>{
-    window.location.href="next.html"; 
-    // change later to next category page
-  },800);
+    // 👉 next category page
+    window.location.href="place.html";
+  },700);
 }
 
-/* ================= FLOATING HEARTS ================= */
+/* FLOATING HEARTS */
 for(let i=0;i<18;i++){
   const h=document.createElement("div");
   h.className="heart";

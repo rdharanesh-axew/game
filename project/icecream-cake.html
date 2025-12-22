@@ -32,7 +32,7 @@ body{
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* QUESTION COUNT */
+/* COUNTER */
 .counter{
   position:absolute;
   top:30px;
@@ -72,7 +72,7 @@ body{
   gap:80px;
 }
 
-/* IMAGE CARD */
+/* CARD */
 .choice-card{
   width:320px;
   height:420px;
@@ -94,7 +94,7 @@ body{
   box-shadow:0 0 55px #ff5fbf;
 }
 
-/* FLOATING HEARTS */
+/* HEARTS */
 .heart{
   position:absolute;
   bottom:-30px;
@@ -126,7 +126,7 @@ body{
 <body>
 
 <div class="title">WHICH ONE DO YOU PREFER?</div>
-<div class="counter">Question 7 / 10</div>
+<div class="counter">Question 7 / 13</div>
 
 <div class="center-text">
   <div class="big">🍨 ICE CREAM OR 🎂 CAKE?</div>
@@ -135,35 +135,48 @@ body{
 
 <div class="game-area">
 
-  <!-- ICE CREAM -->
-  <div class="choice-card" onclick="choose('ICE_CREAM')">
-    <img src="icecream.jpg" alt="Ice Cream">
+  <div class="choice-card" onclick="chooseOption('ICE_CREAM')">
+    <img src="icecream.jpg">
   </div>
 
-  <!-- CAKE -->
-  <div class="choice-card" onclick="choose('CAKE')">
-    <img src="cake.jpg" alt="Cake">
+  <div class="choice-card" onclick="chooseOption('CAKE')">
+    <img src="cake.jpg">
   </div>
 
 </div>
 
 <script>
-/* ====== CHOICE LOGIC ====== */
-function choose(choice){
-  console.log("Selected:", choice);
+/* SESSION CHECK */
+const roomCode = localStorage.getItem("roomCode");
+const playerId = localStorage.getItem("playerId");
 
-  // 🔥 Firebase sync will be added here
-  /*
-  db.ref("rooms/ROOMCODE/choices").push({
-    player: currentPlayer,
-    answer: choice
+if(!roomCode || !playerId){
+  window.location.href="lobby.html";
+}
+
+/* CLICK LOCK */
+let locked = false;
+
+/* CHOICE */
+function chooseOption(choice){
+  if(locked) return;
+  locked = true;
+
+  console.log("ROOM:",roomCode);
+  console.log("PLAYER:",playerId);
+  console.log("CHOICE:",choice);
+
+  /* Firebase later
+  db.ref(`rooms/${roomCode}/iceCreamCake`).push({
+    player: playerId,
+    choice: choice,
+    time: Date.now()
   });
   */
 
-  alert("You selected " + choice + " ❤️");
-
-  // 🔜 Later auto move
-  // window.location.href="nextpage.html";
+  setTimeout(()=>{
+    window.location.href="kovil-park.html";
+  },700);
 }
 
 /* FLOATING HEARTS */
