@@ -154,6 +154,63 @@ for(let i=0;i<12;i++){
   document.body.appendChild(h);
 }
 </script>
+</body>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "PASTE_YOUR_KEY",
+    authDomain: "PASTE",
+    databaseURL: "PASTE",
+    projectId: "PASTE",
+    storageBucket: "PASTE",
+    messagingSenderId: "PASTE",
+    appId: "PASTE"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Waiting Room</title>
+</head>
+
+<body>
+  <h1>Waiting...</h1>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_KEY",
+      authDomain: "YOUR_DOMAIN",
+      databaseURL: "YOUR_DB_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+  <!-- 🔥 STEP 8 TEST CODE (PLACE HERE) -->
+  <script>
+    db.ref("test").set({
+      status: "connected"
+    });
+  </script>
 
 </body>
+</html>
+
+</body>
+
 </html>

@@ -337,6 +337,24 @@ function continueGame(){
 </script>
 
 
+</body>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+<script>
+  const firebaseConfig = {
+    apiKey: "PASTE_YOUR_KEY",
+    authDomain: "PASTE",
+    databaseURL: "PASTE",
+    projectId: "PASTE",
+    storageBucket: "PASTE",
+    messagingSenderId: "PASTE",
+    appId: "PASTE"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
 </body>
 </html>
