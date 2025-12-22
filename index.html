@@ -241,3 +241,92 @@ function exitGame(){
 
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lobby – Room Create & Join</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="font-family:Arial; text-align:center; padding-top:50px">
+
+<h2>🎮 Game Lobby</h2>
+
+<input id="name" placeholder="Enter your name"><br><br>
+<input id="room" placeholder="Room Code"><br><br>
+
+<button onclick="createRoom()">Create Room</button>
+<button onclick="joinRoom()">Join Room</button>
+
+<p id="msg"></p>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+/* 🔥 Firebase CONFIG (replace yours) */
+const firebaseConfig = {
+  apiKey: "PASTE_KEY",
+  authDomain: "PASTE_DOMAIN",
+  databaseURL: "PASTE_DB_URL",
+  projectId: "PASTE_ID",
+  storageBucket: "PASTE_BUCKET",
+  messagingSenderId: "PASTE_SENDER",
+  appId: "PASTE_APP"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* 🆔 Player ID */
+const playerId = "player_" + Math.random().toString(36).substr(2,5);
+
+/* 🏠 CREATE ROOM */
+function createRoom(){
+  const name = document.getElementById("name").value;
+  if(!name){ alert("Enter name"); return; }
+
+  const roomCode = Math.random().toString(36).substr(2,6).toUpperCase();
+
+  db.ref("rooms/"+roomCode).set({
+    createdAt: Date.now(),
+    players:{
+      [playerId]: {
+        name: name,
+        joinedAt: Date.now()
+      }
+    }
+  });
+
+  document.getElementById("msg").innerText =
+    "Room Created ✅ Code: " + roomCode;
+}
+
+/* 🚪 JOIN ROOM */
+function joinRoom(){
+  const name = document.getElementById("name").value;
+  const roomCode = document.getElementById("room").value.toUpperCase();
+
+  if(!name || !roomCode){ alert("Fill all fields"); return; }
+
+  const roomRef = db.ref("rooms/"+roomCode+"/players");
+
+  roomRef.once("value", snap=>{
+    if(snap.exists()){
+      roomRef.child(playerId).set({
+        name:name,
+        joinedAt:Date.now()
+      });
+      document.getElementById("msg").innerText =
+        "Joined Room ✅ " + roomCode;
+    } else {
+      alert("Room not found ❌");
+    }
+  });
+}
+</script>
+
+</body>
+</html>
+
