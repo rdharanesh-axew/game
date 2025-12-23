@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Coffee or Dinner</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -22,89 +22,76 @@ body{
   color:white;
 }
 
-/* QUESTION TEXT */
-.question-text{
+/* TITLE */
+.title{
   text-align:center;
-  margin-top:35px;
-  font-size:36px;
-  font-weight:700;
+  margin-top:30px;
+  font-size:42px;
+  font-weight:600;
   color:#ff5fbf;
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* COUNTER */
+/* QUESTION COUNT */
 .counter{
+  position:absolute;
+  top:30px;
+  right:30px;
+  background:rgba(255,255,255,.12);
+  padding:8px 16px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+/* CENTER TEXT */
+.center-text{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
   text-align:center;
-  margin-top:6px;
+  pointer-events:none;
+}
+
+.center-text .big{
+  font-size:26px;
+  font-weight:600;
+}
+
+.center-text .small{
+  font-size:14px;
   color:#ccc;
-  font-size:15px;
 }
 
 /* GAME AREA */
 .game-area{
-  height:78%;
+  height:80%;
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:90px;
+  gap:80px;
 }
 
-/* OPTION CARD */
-.option-card{
-  width:340px;
-  height:460px;
+/* IMAGE CARD */
+.choice-card{
+  width:320px;
+  height:420px;
   border-radius:30px;
   overflow:hidden;
   cursor:pointer;
   transition:.4s;
-  position:relative;
-  box-shadow:0 0 40px rgba(255,95,191,.5);
-  display:flex;
-  flex-direction:column;
+  box-shadow:0 0 35px rgba(255,95,191,.45);
 }
 
-.option-card img{
+.choice-card img{
   width:100%;
-  height:85%;
+  height:100%;
   object-fit:cover;
 }
 
-.option-card:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 60px #ff5fbf;
-}
-
-/* LABEL BELOW IMAGE WITH GLITTER */
-.label{
-  height:15%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  font-weight:700;
-  color:#fff;
-  background:rgba(0,0,0,.35);
-  letter-spacing:1px;
-  animation:glitter 2s infinite alternate;
-  text-shadow:
-    0 0 8px #ff5fbf,
-    0 0 16px #ff5fbf,
-    0 0 30px #8e44ff;
-}
-
-@keyframes glitter{
-  from{
-    text-shadow:
-      0 0 6px #ff5fbf,
-      0 0 14px #ff5fbf,
-      0 0 24px #8e44ff;
-  }
-  to{
-    text-shadow:
-      0 0 12px #ffb3e6,
-      0 0 26px #ff5fbf,
-      0 0 50px #8e44ff;
-  }
+.choice-card:hover{
+  transform:scale(1.12);
+  box-shadow:0 0 55px #ff5fbf;
 }
 
 /* FLOATING HEARTS */
@@ -126,11 +113,11 @@ body{
 @media(max-width:768px){
   .game-area{
     flex-direction:column;
-    gap:40px;
+    gap:35px;
   }
-  .option-card{
-    width:90%;
-    height:400px;
+  .choice-card{
+    width:85%;
+    height:260px;
   }
 }
 </style>
@@ -138,33 +125,68 @@ body{
 
 <body>
 
-<div class="question-text">Which one do you prefer?</div>
-<div class="counter">Question 10 / 10 ❤️</div>
+<div class="title">WHICH ONE DO YOU PREFER?</div>
+<div class="counter">Question 10 / 10</div>
+
+<div class="center-text">
+  <div class="big">☕ COFFEE OR 🍽️ DINNER?</div>
+  <div class="small">Final choice ❤️</div>
+</div>
 
 <div class="game-area">
 
-  <!-- COFFEE DATE -->
-  <div class="option-card" onclick="chooseOption('Coffee Date')">
-    <img src="coffee.jpg">
-    <div class="label">Coffee Date ☕</div>
+  <!-- COFFEE -->
+  <div class="choice-card" onclick="choose('COFFEE')">
+    <img src="coffee.jpg" alt="Coffee">
   </div>
 
-  <!-- DINNER DATE -->
-  <div class="option-card" onclick="chooseOption('Dinner Date')">
-    <img src="dinner.jpg">
-    <div class="label">Dinner Date 🍽️</div>
+  <!-- DINNER -->
+  <div class="choice-card" onclick="choose('DINNER')">
+    <img src="dinner.jpg" alt="Dinner">
   </div>
 
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
-function chooseOption(choice){
-  console.log("Selected:", choice);
-  window.location.href="result.html";
+/* 🔥 FIREBASE CONFIG (same as lobby) */
+const firebaseConfig = {
+  apiKey: "PASTE_KEY",
+  authDomain: "PASTE",
+  databaseURL: "PASTE",
+  projectId: "PASTE",
+  appId: "PASTE"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ====== CHOICE LOGIC ====== */
+let clicked=false;
+function choose(choice){
+  if(clicked) return;
+  clicked=true;
+
+  const roomCode = localStorage.getItem("roomCode");
+  const playerId = localStorage.getItem("playerId");
+
+  if(roomCode && playerId){
+    db.ref(`rooms/${roomCode}/answers/coffeeDinner/${playerId}`).set({
+      choice: choice,
+      time: Date.now()
+    });
+  }
+
+  // NEXT PAGE → RESULT
+  setTimeout(()=>{
+    window.location.href="result.html";
+  },500);
 }
 
 /* FLOATING HEARTS */
-for(let i=0;i<18;i++){
+for(let i=0;i<22;i++){
   const h=document.createElement("div");
   h.className="heart";
   h.innerHTML="❤";
