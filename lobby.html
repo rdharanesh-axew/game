@@ -246,64 +246,106 @@ for(let i=0;i<18;i++){
 
 <script>
 const firebaseConfig = {
-  apiKey: "PASTE_KEY",
-  authDomain: "PASTE",
-  databaseURL: "PASTE",
+  apiKey: "PASTE_YOUR_KEY",
+  authDomain: "PASTE.firebaseapp.com",
+  databaseURL: "https://PASTE-default-rtdb.firebaseio.com",
   projectId: "PASTE",
   appId: "PASTE"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const popup=document.getElementById("popup");
-const popupTitle=document.getElementById("popupTitle");
-const roomCodeBox=document.getElementById("roomCodeBox");
-const joinCode=document.getElementById("joinCode");
+const nameInput = document.getElementById("name");
+const genderInput = document.getElementById("gender");
+const relationInput = document.getElementById("relation");
+
+const popup = document.getElementById("popup");
+const popupTitle = document.getElementById("popupTitle");
+const roomCodeBox = document.getElementById("roomCodeBox");
+const joinCode = document.getElementById("joinCode");
 
 function genCode(){
-  return "AUR"+Math.floor(1000+Math.random()*9000);
+  return "AUR" + Math.floor(1000 + Math.random() * 9000);
 }
 
 function validate(){
-  return name.value && gender.value && relation.value;
+  return nameInput.value && genderInput.value && relationInput.value;
 }
 
 function createRoom(){
-  if(!validate()){ alert("Fill all details ❤️"); return; }
-  const code=genCode();
+  if(!validate()){
+    alert("Fill all details ❤️");
+    return;
+  }
 
-  localStorage.setItem("roomCode",code);
-  localStorage.setItem("playerId","player1");
+  const code = genCode();
 
-  db.ref("rooms/"+code).set({
-    players:{
-      player1:{ ready:false }
+  localStorage.setItem("roomCode", code);
+  localStorage.setItem("playerId", "player1");
+
+  db.ref("rooms/" + code).set({
+    createdAt: Date.now(),
+    players: {
+      player1: {
+        name: nameInput.value,
+        gender: genderInput.value,
+        relation: relationInput.value,
+        ready: false
+      }
     }
   });
 
-  popupTitle.innerText="Room Created 🎉";
-  roomCodeBox.innerText=code;
-  roomCodeBox.style.display="block";
-  joinCode.style.display="none";
-  popup.style.display="flex";
+  popupTitle.innerText = "Room Created 🎉";
+  roomCodeBox.innerText = code;
+  roomCodeBox.style.display = "block";
+  joinCode.style.display = "none";
+  popup.style.display = "flex";
 }
 
 function joinRoom(){
-  popupTitle.innerText="Join Room 🔗";
-  roomCodeBox.style.display="none";
-  joinCode.style.display="block";
-  popup.style.display="flex";
+  if(!validate()){
+    alert("Fill all details ❤️");
+    return;
+  }
+
+  popupTitle.innerText = "Join Room 🔗";
+  roomCodeBox.style.display = "none";
+  joinCode.style.display = "block";
+  popup.style.display = "flex";
 }
 
 function continueGame(){
-  if(joinCode.style.display==="block"){
-    if(!joinCode.value){ alert("Enter room code ❤️"); return; }
-    localStorage.setItem("roomCode",joinCode.value);
-    localStorage.setItem("playerId","player2");
+  if(joinCode.style.display === "block"){
+    if(!joinCode.value){
+      alert("Enter room code ❤️");
+      return;
+    }
 
-    db.ref("rooms/"+joinCode.value+"/players/player2").set({ ready:false });
+    const code = joinCode.value.toUpperCase();
+
+    db.ref("rooms/" + code).once("value", snap => {
+      if(!snap.exists()){
+        alert("Room not found 💔");
+        return;
+      }
+
+      localStorage.setItem("roomCode", code);
+      localStorage.setItem("playerId", "player2");
+
+      db.ref("rooms/" + code + "/players/player2").set({
+        name: nameInput.value,
+        gender: genderInput.value,
+        relation: relationInput.value,
+        ready: false
+      });
+
+      window.location.href = "waiting.html";
+    });
+
+  } else {
+    window.location.href = "waiting.html";
   }
-  window.location.href="waiting.html";
 }
 </script>
 
