@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lobby – Connect With Auraa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -93,7 +93,7 @@ for(let i=0;i<18;i++){
   </div>
 </div>
 
-<!-- ✅ FIREBASE (ONLY THIS) -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -128,20 +128,16 @@ function validate(){return nameInput.value && genderInput.value && relationInput
 
 function createRoom(){
   if(!validate()) return alert("Fill all details ❤️");
-
   const code = genCode();
-  mode = "create";
+  mode="create";
 
   db.ref("rooms/"+code).set({
-    createdAt: Date.now(),
-    status: "waiting",
-    players:{
-      player1:{
-        name:nameInput.value,
-        gender:genderInput.value,
-        relation:relationInput.value
-      }
-    }
+    status:"waiting",
+    players:{player1:{
+      name:nameInput.value,
+      gender:genderInput.value,
+      relation:relationInput.value
+    }}
   }).then(()=>{
 
     localStorage.setItem("roomCode",code);
@@ -152,7 +148,7 @@ function createRoom(){
     roomCodeBox.style.display="block";
     joinCode.style.display="none";
     popup.style.display="flex";
-  }).catch(e=>alert(e.message));
+  });
 }
 
 function joinRoom(){
@@ -167,48 +163,32 @@ function joinRoom(){
 
 function continueGame(){
 
-  // creator → go wait page
   if(mode==="create"){
     window.location.href="waiting.html";
     return;
   }
 
-  // joiner side
   const code = joinCode.value.trim().toUpperCase();
   if(!code) return alert("Enter room code ❤️");
 
   db.ref("rooms/"+code).once("value").then(snap=>{
+    if(!snap.exists()) return alert("Room not found 💔");
 
-    if(!snap.exists()){
-      alert("Room not found 💔");
-      return;
-    }
+    const data=snap.val();
+    if(data.players?.player2) return alert("Room already full 😢");
 
-    const data = snap.val();
-
-    // already 2 players iruntha block panrom
-    if(data.players && data.players.player2){
-      alert("Room already full 😢");
-      return;
-    }
-
-    // save player2
     return db.ref("rooms/"+code+"/players/player2").set({
       name:nameInput.value,
       gender:genderInput.value,
       relation:relationInput.value
     }).then(()=>{
-
       localStorage.setItem("roomCode",code);
       localStorage.setItem("playerId","player2");
-
       window.location.href="waiting.html";
     });
-
-  }).catch(e=>alert(e.message));
+  });
 }
 </script>
-
 
 </body>
 </html>
