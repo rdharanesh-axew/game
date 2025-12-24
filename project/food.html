@@ -145,8 +145,21 @@ body{
 <div id="screen11" class="screen"><h1>PAGE 11</h1></div>
 <div id="screen12" class="screen"><h1>PAGE 12</h1></div>
 <div id="screen13" class="screen"><h1>RESULT PAGE ❤️</h1></div>
+<!-- ✅ FIREBASE (ONLY THIS) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
+  authDomain: "auraa-love-game.firebaseapp.com",
+  databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
+  projectId: "auraa-love-game",
+  storageBucket: "auraa-love-game.appspot.com",
+  messagingSenderId: "631139663700",
+  appId: "1:631139663700:web:960bee870186a1d5fc12c1"
+};
+
 /* SESSION CHECK */
 const roomCode = localStorage.getItem("roomCode");
 const playerId = localStorage.getItem("playerId");
@@ -200,6 +213,7 @@ for(let i=0;i<18;i++){
   document.body.appendChild(h);
 }
 </script>
+
 
 </body>
 </html>

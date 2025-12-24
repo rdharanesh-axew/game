@@ -260,21 +260,22 @@ function exitGame(){
 
 <p id="msg"></p>
 
-<!-- Firebase -->
+<!-- ✅ FIREBASE (ONLY THIS) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* 🔥 Firebase CONFIG (replace yours) */
 const firebaseConfig = {
-  apiKey: "PASTE_KEY",
-  authDomain: "PASTE_DOMAIN",
-  databaseURL: "PASTE_DB_URL",
-  projectId: "PASTE_ID",
-  storageBucket: "PASTE_BUCKET",
-  messagingSenderId: "PASTE_SENDER",
-  appId: "PASTE_APP"
+  apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
+  authDomain: "auraa-love-game.firebaseapp.com",
+  databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
+  projectId: "auraa-love-game",
+  storageBucket: "auraa-love-game.appspot.com",
+  messagingSenderId: "631139663700",
+  appId: "1:631139663700:web:960bee870186a1d5fc12c1"
 };
+/* 🔥 Firebase CONFIG (replace yours) */
+
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
