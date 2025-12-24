@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lobby – Connect With Auraa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{height:100vh;background:#000;overflow:hidden;color:white;}
+.heart{position:absolute;bottom:-30px;color:#ff5fbf;font-size:20px;animation:floatUp linear infinite;}
+@keyframes floatUp{from{transform:translateY(0);opacity:0;}20%{opacity:1;}to{transform:translateY(-120vh);opacity:0;}}
+.page-title{position:absolute;top:25px;left:60%;transform:translateX(-50%);
+font-family:'Playfair Display',serif;font-size:42px;letter-spacing:4px;
+color:#ffb3e6;text-shadow:0 0 15px #ff5fbf,0 0 35px #ff5fbf;}
+.wrapper{display:flex;width:100%;height:100%;}
+.left{width:50%;}
+.left img{width:100%;height:100%;object-fit:cover;}
+.right{width:50%;display:flex;justify-content:center;align-items:center;
+background:radial-gradient(circle at top,#3a004d,#000);}
+.card{width:360px;background:#2c0b4c;padding:30px;border-radius:25px;
+box-shadow:0 0 35px rgba(255,95,191,.45);}
+.card h2{text-align:center;color:#ff5fbf;margin-bottom:20px;}
+label{display:block;margin:10px 0 6px;font-size:14px;color:#ccc;}
+input,select{width:100%;padding:12px;border:none;border-radius:12px;
+background:#3a0055;color:white;font-size:15px;}
+.action-btn{margin-top:14px;width:100%;padding:14px;border:none;border-radius:30px;
+font-size:16px;font-weight:600;cursor:pointer;color:white;transition:.3s;}
+.create{background:linear-gradient(135deg,#ff5fbf,#8e44ff);}
+.join{background:linear-gradient(135deg,#4dd0ff,#1b75ff);}
+.action-btn:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,.4);}
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.75);
+display:none;justify-content:center;align-items:center;}
+.popup-box{width:330px;background:#2c0b4c;padding:25px;border-radius:25px;
+text-align:center;box-shadow:0 0 30px rgba(255,95,191,.5);}
+.popup-box h3{color:#ff5fbf;margin-bottom:10px;}
+.room-code{font-size:30px;letter-spacing:4px;background:#3a0055;
+padding:14px;border-radius:18px;margin:15px 0;}
+.popup-box input{width:100%;padding:12px;border:none;border-radius:12px;
+background:#3a0055;color:white;margin-bottom:12px;}
+.popup-btn{width:100%;padding:14px;border:none;border-radius:30px;
+font-size:16px;font-weight:600;cursor:pointer;color:white;
+background:linear-gradient(135deg,#ff5fbf,#8e44ff);}
+</style>
+</head>
+
+<body>
+
+<script>
+for(let i=0;i<18;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=5+Math.random()*5+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+<div class="page-title">CONNECT WITH AURAA</div>
+
+<div class="wrapper">
+  <div class="left"><img src="assets/lobby-img.jpg"></div>
+  <div class="right">
+    <div class="card">
+      <h2>Your Details</h2>
+      <label>Name</label><input id="name">
+      <label>Gender</label>
+      <select id="gender">
+        <option value="">Select</option>
+        <option>Male</option><option>Female</option><option>Other</option>
+      </select>
+      <label>Relationship</label>
+      <select id="relation">
+        <option value="">Select</option>
+        <option>Best Friends</option><option>Crush</option>
+        <option>Lovers</option><option>Soulmates</option>
+      </select>
+      <button class="action-btn create" onclick="createRoom()">Create Room ✨</button>
+      <button class="action-btn join" onclick="joinRoom()">Join Room 🎮</button>
+    </div>
+  </div>
+</div>
+
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <h3 id="popupTitle"></h3>
+    <div class="room-code" id="roomCodeBox"></div>
+    <input id="joinCode" placeholder="Enter Room Code">
+    <button class="popup-btn" onclick="continueGame()">Continue ❤️</button>
+  </div>
+</div>
+
+<!-- ✅ FIREBASE (ONLY THIS) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
+  authDomain: "auraa-love-game.firebaseapp.com",
+  databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
+  projectId: "auraa-love-game",
+  storageBucket: "auraa-love-game.appspot.com",
+  messagingSenderId: "631139663700",
+  appId: "1:631139663700:web:960bee870186a1d5fc12c1"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+
+<script>
+const nameInput=document.getElementById("name");
+const genderInput=document.getElementById("gender");
+const relationInput=document.getElementById("relation");
+const popup=document.getElementById("popup");
+const popupTitle=document.getElementById("popupTitle");
+const roomCodeBox=document.getElementById("roomCodeBox");
+const joinCode=document.getElementById("joinCode");
+
+let mode="";
+
+function genCode(){return "AUR"+Math.floor(1000+Math.random()*9000);}
+function validate(){return nameInput.value && genderInput.value && relationInput.value;}
+
+function createRoom(){
+  if(!validate()) return alert("Fill all details ❤️");
+
+  const code = genCode();
+  mode = "create";
+
+  db.ref("rooms/"+code).set({
+    createdAt: Date.now(),
+    status: "waiting",
+    players:{
+      player1:{
+        name:nameInput.value,
+        gender:genderInput.value,
+        relation:relationInput.value
+      }
+    }
+  }).then(()=>{
+
+    localStorage.setItem("roomCode",code);
+    localStorage.setItem("playerId","player1");
+
+    popupTitle.innerText="Room Created 🎉";
+    roomCodeBox.innerText=code;
+    roomCodeBox.style.display="block";
+    joinCode.style.display="none";
+    popup.style.display="flex";
+  }).catch(e=>alert(e.message));
+}
+
+function joinRoom(){
+  if(!validate()) return alert("Fill all details ❤️");
+
+  mode="join";
+  popupTitle.innerText="Join Room 🔗";
+  roomCodeBox.style.display="none";
+  joinCode.style.display="block";
+  popup.style.display="flex";
+}
+
+function continueGame(){
+
+  // creator → go wait page
+  if(mode==="create"){
+    window.location.href="waiting.html";
+    return;
+  }
+
+  // joiner side
+  const code = joinCode.value.trim().toUpperCase();
+  if(!code) return alert("Enter room code ❤️");
+
+  db.ref("rooms/"+code).once("value").then(snap=>{
+
+    if(!snap.exists()){
+      alert("Room not found 💔");
+      return;
+    }
+
+    const data = snap.val();
+
+    // already 2 players iruntha block panrom
+    if(data.players && data.players.player2){
+      alert("Room already full 😢");
+      return;
+    }
+
+    // save player2
+    return db.ref("rooms/"+code+"/players/player2").set({
+      name:nameInput.value,
+      gender:genderInput.value,
+      relation:relationInput.value
+    }).then(()=>{
+
+      localStorage.setItem("roomCode",code);
+      localStorage.setItem("playerId","player2");
+
+      window.location.href="waiting.html";
+    });
+
+  }).catch(e=>alert(e.message));
+}
+</script>
+
+
+</body>
+</html>
