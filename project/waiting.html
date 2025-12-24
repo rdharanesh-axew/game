@@ -102,8 +102,9 @@ body{
 </div>
 
 <div class="bear-area" id="bearArea">
-  <img src="assets/bear.gif" class="bear p1">
-  <img src="assets/bear.gif" class="bear p2">
+<img src="assets/bear.gif" class="bear p1">
+<img src="assets/bear.gif" class="bear p2">
+
 </div>
 
 <div class="status" id="statusText">
@@ -112,7 +113,7 @@ body{
 
 <button id="readyBtn">I'm Ready ❤️</button>
 
-<!-- ✅ FIREBASE (ONLY THIS) -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -134,6 +135,11 @@ const db = firebase.database();
 const roomCode = localStorage.getItem("roomCode");
 const playerId = localStorage.getItem("playerId");
 
+/* SAFETY CHECK */
+if(!roomCode || !playerId){
+  window.location.href="index.html";
+}
+
 document.getElementById("roomCodeText").innerText = roomCode;
 
 /* REGISTER PLAYER */
@@ -149,7 +155,7 @@ readyBtn.onclick = () => {
   statusText.innerText = "You are ready ⏳ Waiting...";
 };
 
-/* WATCH PLAYERS */
+/* WATCH PLAYERS READY */
 db.ref("rooms/"+roomCode+"/ready").on("value", snap=>{
   const data = snap.val() || {};
   const count = Object.keys(data).length;
@@ -164,7 +170,7 @@ db.ref("rooms/"+roomCode+"/ready").on("value", snap=>{
   }
 });
 
-/* FLOATING HEARTS */
+/* HEARTS */
 for(let i=0;i<12;i++){
   const h=document.createElement("div");
   h.className="heart";

@@ -31,7 +31,6 @@ body{
   color:white;
 }
 
-/* TITLE */
 .title{
   text-align:center;
   margin-top:30px;
@@ -41,14 +40,12 @@ body{
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* QUESTION COUNT */
 .counter{
   text-align:center;
   margin-top:5px;
   color:#ccc;
 }
 
-/* GAME AREA */
 .game-area{
   height:80%;
   display:flex;
@@ -57,7 +54,6 @@ body{
   gap:70px;
 }
 
-/* FOOD CARD */
 .food-card{
   width:280px;
   height:380px;
@@ -80,7 +76,6 @@ body{
   box-shadow:0 0 60px #ff5fbf;
 }
 
-/* LABEL */
 .label{
   position:absolute;
   bottom:15px;
@@ -91,7 +86,6 @@ body{
   text-shadow:0 0 10px black;
 }
 
-/* FLOATING HEARTS */
 .heart{
   position:absolute;
   bottom:-30px;
@@ -100,12 +94,12 @@ body{
   animation:floatUp linear infinite;
   pointer-events:none;
 }
+
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1;}
   to{transform:translateY(-120vh);opacity:0;}
 }
 
-/* MOBILE */
 @media(max-width:768px){
   .game-area{
     flex-direction:column;
@@ -117,39 +111,29 @@ body{
 
 <body onload="showScreen(1)">
 
-<!-- SCREENS -->
 <div id="screen1" class="screen">
   <div class="title">WHICH FOOD DO YOU PREFER? 🍕</div>
   <div class="counter">Question 1 / 13</div>
+
   <div class="game-area">
-    <div class="food-card" onclick="selectChoice('FOOD_LEFT')">
-      <img src="food_left.jpg">
+    <div class="food-card" onclick="selectChoice('LEFT')">
+      <img src="/assets/food_left.jpg">
       <div class="label">Option A</div>
     </div>
-    <div class="food-card" onclick="selectChoice('FOOD_RIGHT')">
-      <img src="food_right.jpg">
+
+    <div class="food-card" onclick="selectChoice('RIGHT')">
+      <img src="/assets/food_right.jpg">
       <div class="label">Option B</div>
     </div>
   </div>
 </div>
 
-<div id="screen2" class="screen"><h1>VEHICLE PAGE 🚗</h1></div>
-<div id="screen3" class="screen"><h1>PLACE PAGE 🌍</h1></div>
-<div id="screen4" class="screen"><h1>MOVIE PAGE 🎬</h1></div>
-<div id="screen5" class="screen"><h1>MUSIC PAGE 🎵</h1></div>
-<div id="screen6" class="screen"><h1>SCHOOL / COLLEGE 🎓</h1></div>
-<div id="screen7" class="screen"><h1>ICE CREAM / CAKE 🍰</h1></div>
-<div id="screen8" class="screen"><h1>TEMPLE / PARK 🛕</h1></div>
-<div id="screen9" class="screen"><h1>NIGHT OUT 🌙</h1></div>
-<div id="screen10" class="screen"><h1>COFFEE / DINNER ☕</h1></div>
-<div id="screen11" class="screen"><h1>PAGE 11</h1></div>
-<div id="screen12" class="screen"><h1>PAGE 12</h1></div>
-<div id="screen13" class="screen"><h1>RESULT PAGE ❤️</h1></div>
-<!-- ✅ FIREBASE (ONLY THIS) -->
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+/* ---------- FIREBASE ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
   authDomain: "auraa-love-game.firebaseapp.com",
@@ -160,50 +144,40 @@ const firebaseConfig = {
   appId: "1:631139663700:web:960bee870186a1d5fc12c1"
 };
 
-/* SESSION CHECK */
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ---------- SESSION CHECK ---------- */
 const roomCode = localStorage.getItem("roomCode");
 const playerId = localStorage.getItem("playerId");
 
 if(!roomCode || !playerId){
-  window.location.href="lobby.html";
+   window.location.href = "index.html";
 }
 
-/* GAME ENGINE */
-let currentStep = 1;
-const totalSteps = 13;
-let locked = false;
-
+/* ---------- UI ---------- */
 function showScreen(n){
   document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
   document.getElementById("screen"+n).style.display="flex";
 }
 
-function nextStep(){
-  if(currentStep < totalSteps){
-    currentStep++;
-    showScreen(currentStep);
-  }else{
-    // ✅ ALL QUESTIONS DONE
-    setTimeout(()=>{
-      window.location.href="waiting.html";
-    },1500);
-  }
-}
-
-/* CHOICE */
+/* ---------- SAVE CHOICE THEN GO VEHICLE ---------- */
 function selectChoice(choice){
-  if(locked) return;
-  locked = true;
 
-  console.log("ROOM:",roomCode,"PLAYER:",playerId,"CHOICE:",choice);
+  db.ref(`rooms/${roomCode}/answers/${playerId}/food`).set(choice)
+  .then(()=>{
+      console.log("Food saved:",choice);
 
-  setTimeout(()=>{
-    locked = false;
-    nextStep();
-  },700);
+      // 🔥 NEXT PAGE
+      window.location.href = "vehicle.html";
+  })
+  .catch(err=>{
+      alert("Firebase error: "+err);
+  });
+
 }
 
-/* FLOATING HEARTS */
+/* ---------- HEARTS ---------- */
 for(let i=0;i<18;i++){
   const h=document.createElement("div");
   h.className="heart";
@@ -213,7 +187,6 @@ for(let i=0;i<18;i++){
   document.body.appendChild(h);
 }
 </script>
-
 
 </body>
 </html>
