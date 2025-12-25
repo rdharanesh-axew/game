@@ -139,6 +139,13 @@ function createRoom(){
       relation:relationInput.value
     }}
   }).then(()=>{
+    localStorage.setItem("score", 0);
+    localStorage.setItem("total", 10);   // total questions FIXED
+
+    let s = Number(localStorage.getItem("score")) || 0;
+    localStorage.setItem("score", s + 1);
+
+
 
     localStorage.setItem("roomCode",code);
     localStorage.setItem("playerId","player1");

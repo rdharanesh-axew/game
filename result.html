@@ -182,25 +182,33 @@ onValue(ref(db,"game/player2/score"), snap=>{
 </script>
 
 <script>
-// Get values
-let score = Number(localStorage.getItem("score")) || 0;
-let total = Number(localStorage.getItem("total")) || 10;
+let score = Number(localStorage.getItem("score"));
+let total = Number(localStorage.getItem("total"));
 
-// Clamp values
-if (total <= 0) total = 10;
-if (score > total) score = total;
-if (score < 0) score = 0;
+// safety
+if(isNaN(score)) score = 0;
+if(isNaN(total) || total<=0) total = 10;
 
-// Percent
-let percentage = (score / total) * 100;
-let percent = Math.round((score / total) * 100);
-if (percent > 100) percent = 100;
-if (percent < 0) percent = 0;
+// clamp
+if(score < 0) score = 0;
+if(score > total) score = total;
 
-// Show UI
+// percent
+let percent = Math.round((score/total)*100);
+if(percent>100) percent = 100;
+if(percent<0) percent = 0;
+
+// show UI
 document.getElementById("score").innerText = score;
 document.getElementById("total").innerText = total;
 document.getElementById("percent").innerText = percent + "%";
+
+// debug — இதை வைத்து check பண்ணலாம்
+console.log("SCORE =",score);
+console.log("TOTAL =",total);
+console.log("PERCENT =",percent);
+</script>
+<script>
 
 // QUOTES
 const quotes = [
