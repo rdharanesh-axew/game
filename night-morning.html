@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Favourite Movie</title>
+<title>Night or Morning</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -22,74 +22,73 @@ body{
   color:white;
 }
 
-/* TITLE */
-.title{
+/* QUESTION TEXT */
+.question-text{
   text-align:center;
-  margin-top:30px;
-  font-size:42px;
-  font-weight:600;
+  margin-top:35px;
+  font-size:36px;
+  font-weight:700;
   color:#ff5fbf;
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* QUESTION COUNT */
+/* COUNTER */
 .counter{
   text-align:center;
-  margin-top:5px;
+  margin-top:6px;
   color:#ccc;
+  font-size:15px;
 }
 
 /* GAME AREA */
 .game-area{
-  height:80%;
+  height:78%;
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:80px;
+  gap:90px;
 }
 
-/* MOVIE CARD */
-.movie-card{
+/* OPTION CARD */
+.option-card{
   width:340px;
   height:460px;
-  border-radius:35px;
+  border-radius:30px;
   overflow:hidden;
   cursor:pointer;
-  position:relative;
   transition:.4s;
+  position:relative;
   box-shadow:0 0 40px rgba(255,95,191,.5);
 }
 
-.movie-card img{
+.option-card img{
   width:100%;
   height:100%;
   object-fit:cover;
 }
 
-.movie-card:hover{
-  transform:scale(1.12);
-  box-shadow:0 0 65px #ff5fbf;
+.option-card:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 60px #ff5fbf;
 }
 
 /* LABEL */
 .label{
   position:absolute;
-  bottom:0;
+  bottom:20px;
   width:100%;
-  padding:18px 0;
   text-align:center;
-  font-size:26px;
+  font-size:24px;
   font-weight:600;
-  background:linear-gradient(to top,rgba(0,0,0,.85),transparent);
-  text-shadow:0 0 12px black;
+  text-shadow:0 0 14px black;
 }
 
 /* FLOATING HEARTS */
 .heart{
   position:absolute;
   bottom:-30px;
-  font-size:22px;
   color:#ff5fbf;
+  font-size:22px;
   animation:floatUp linear infinite;
   pointer-events:none;
 }
@@ -105,9 +104,9 @@ body{
     flex-direction:column;
     gap:40px;
   }
-  .movie-card{
-    width:300px;
-    height:420px;
+  .option-card{
+    width:90%;
+    height:380px;
   }
 }
 </style>
@@ -115,25 +114,23 @@ body{
 
 <body>
 
-<div class="title">Favourite Movie 🎬</div>
-<div class="counter">Question 4 / 13</div>
+<div class="question-text">Which one do you prefer?</div>
+<div class="counter">Question 7 / 10 ❤️</div>
 
 <div class="game-area">
 
-  <div class="movie-card" onclick="selectMovie('MOVIE_A')">
-    <img src="assets/movie_left.jpg">
-    <div class="label">Movie A</div>
+  <div class="option-card" onclick="chooseOption('NIGHT')">
+    <img src="assets/night.jpg" alt="Night Out">
   </div>
 
-  <div class="movie-card" onclick="selectMovie('MOVIE_B')">
-    <img src="assets/movie_right.jpg">
-    <div class="label">Movie B</div>
+  <div class="option-card" onclick="chooseOption('MORNING')">
+    <img src="assets/morning.jpg" alt="Morning Out">
   </div>
 
 </div>
 
 <script>
-/* SESSION CHECK */
+/* SESSION SAFE */
 const roomCode = localStorage.getItem("roomCode");
 const playerId = localStorage.getItem("playerId");
 
@@ -141,34 +138,30 @@ if(!roomCode || !playerId){
   window.location.href="lobby.html";
 }
 
-/* CLICK LOCK */
-let locked = false;
+/* MAIN LOGIC */
+let clicked = false;
 
-function selectMovie(choice){
-  if(locked) return;
-  locked = true;
+function goNextPage(){
+  window.location.href = "icecream-cake.html";
+}
 
-  new Audio("click.mp3").play().catch(()=>{});
+function chooseOption(choice){
+  if(clicked) return;
+  clicked = true;
+
+  // SAVE CHOICE — localStorage (optional, firebase later)
+  localStorage.setItem("q7_nightMorning", choice);
 
   console.log("ROOM:", roomCode);
   console.log("PLAYER:", playerId);
-  console.log("MOVIE:", choice);
+  console.log("CHOICE:", choice);
 
-  /* Firebase later
-  db.ref(`rooms/${roomCode}/movie`).push({
-    player: playerId,
-    choice: choice,
-    time: Date.now()
-  });
-  */
-
-  setTimeout(()=>{
-    window.location.href="music.html";
-  },700);
+  // Redirect safely after 0.5s
+  setTimeout(goNextPage, 500);
 }
 
 /* FLOATING HEARTS */
-for(let i=0;i<22;i++){
+for(let i=0;i<18;i++){
   const h=document.createElement("div");
   h.className="heart";
   h.innerHTML="❤";

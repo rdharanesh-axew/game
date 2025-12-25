@@ -22,7 +22,6 @@ body{
   color:white;
 }
 
-/* TITLE */
 .title{
   text-align:center;
   margin-top:30px;
@@ -32,7 +31,6 @@ body{
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* QUESTION COUNT */
 .counter{
   position:absolute;
   top:30px;
@@ -43,7 +41,6 @@ body{
   font-size:14px;
 }
 
-/* CENTER TEXT */
 .center-text{
   position:absolute;
   top:50%;
@@ -63,7 +60,6 @@ body{
   color:#ccc;
 }
 
-/* GAME AREA */
 .game-area{
   height:80%;
   display:flex;
@@ -72,7 +68,6 @@ body{
   gap:80px;
 }
 
-/* IMAGE CARD */
 .choice-card{
   width:320px;
   height:420px;
@@ -94,7 +89,6 @@ body{
   box-shadow:0 0 55px #ff5fbf;
 }
 
-/* FLOATING HEARTS */
 .heart{
   position:absolute;
   bottom:-30px;
@@ -109,7 +103,6 @@ body{
   to{transform:translateY(-120vh);opacity:0;}
 }
 
-/* MOBILE */
 @media(max-width:768px){
   .game-area{
     flex-direction:column;
@@ -126,23 +119,21 @@ body{
 <body>
 
 <div class="title">WHICH ONE DO YOU PREFER?</div>
-<div class="counter">Question 10 / 10</div>
+<div class="counter">Question 6 / 10</div>
 
 <div class="center-text">
   <div class="big">☕ COFFEE OR 🍽️ DINNER?</div>
-  <div class="small">Final choice ❤️</div>
+  <div class="small">Make your pick ❤️</div>
 </div>
 
 <div class="game-area">
 
-  <!-- COFFEE -->
   <div class="choice-card" onclick="choose('COFFEE')">
-    <img src="assets/coffee.jpg" alt="Coffee">
+    <img src="assets/coffee.jpg" alt="">
   </div>
 
-  <!-- DINNER -->
   <div class="choice-card" onclick="choose('DINNER')">
-    <img src="assets/dinner.jpg" alt="Dinner">
+    <img src="assets/dinner.jpg" alt="">
   </div>
 
 </div>
@@ -152,37 +143,65 @@ body{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* 🔥 FIREBASE CONFIG (same as lobby) */
-const firebaseConfig = {
-  apiKey: "PASTE_KEY",
-  authDomain: "PASTE",
-  databaseURL: "PASTE",
-  projectId: "PASTE",
-  appId: "PASTE"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+/* FIREBASE — EVEN IF THIS FAILS REDIRECT WILL WORK */
+let db = null;
 
-/* ====== CHOICE LOGIC ====== */
-let clicked=false;
+try{
+  const firebaseConfig = {
+    apiKey: "PASTE_KEY",
+    authDomain: "PASTE",
+    databaseURL: "PASTE",
+    projectId: "PASTE",
+    appId: "PASTE"
+  };
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+}catch(e){
+  console.log("Firebase failed — but it's ok 👍");
+}
+
+/* ========== MAIN LOGIC ========== */
+let clicked = false;
+
+function goNext(){
+  // *** NEXT PAGE HERE ***
+  window.location.href = "night-morning.html";
+}
+
 function choose(choice){
+
   if(clicked) return;
-  clicked=true;
+  clicked = true;
 
   const roomCode = localStorage.getItem("roomCode");
   const playerId = localStorage.getItem("playerId");
 
-  if(roomCode && playerId){
-    db.ref(`rooms/${roomCode}/answers/coffeeDinner/${playerId}`).set({
-      choice: choice,
-      time: Date.now()
-    });
-  }
+  // Backup timer — 1 sec la kandippa pogum
+  const safety = setTimeout(goNext, 1000);
 
-  // NEXT PAGE → RESULT
-  setTimeout(()=>{
-    window.location.href="result.html";
-  },500);
+  try{
+    if(db && roomCode && playerId){
+      db.ref(`rooms/${roomCode}/answers/coffeeDinner/${playerId}`)
+      .set({
+        choice: choice,
+        time: Date.now()
+      })
+      .then(()=>{
+        clearTimeout(safety);
+        goNext();
+      })
+      .catch(()=>{
+        clearTimeout(safety);
+        goNext();
+      });
+    }else{
+      clearTimeout(safety);
+      goNext();
+    }
+  }catch(e){
+    clearTimeout(safety);
+    goNext();
+  }
 }
 
 /* FLOATING HEARTS */

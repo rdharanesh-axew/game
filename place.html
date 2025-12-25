@@ -22,7 +22,6 @@ body{
   color:white;
 }
 
-/* TITLE */
 .title{
   text-align:center;
   margin-top:30px;
@@ -32,14 +31,12 @@ body{
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* QUESTION COUNT */
 .counter{
   text-align:center;
   margin-top:5px;
   color:#ccc;
 }
 
-/* GAME AREA */
 .game-area{
   height:80%;
   display:flex;
@@ -48,7 +45,6 @@ body{
   gap:70px;
 }
 
-/* PLACE CARD */
 .place-card{
   width:280px;
   height:380px;
@@ -71,7 +67,6 @@ body{
   box-shadow:0 0 60px #ff5fbf;
 }
 
-/* LABEL */
 .label{
   position:absolute;
   bottom:15px;
@@ -82,7 +77,6 @@ body{
   text-shadow:0 0 10px black;
 }
 
-/* FLOATING SPARKLES */
 .spark{
   position:absolute;
   width:6px;
@@ -98,7 +92,6 @@ body{
   to{transform:translateY(-120vh) scale(0);opacity:0;}
 }
 
-/* MOBILE */
 @media(max-width:768px){
   .game-area{
     flex-direction:column;
@@ -128,31 +121,39 @@ body{
 </div>
 
 <script>
-/* SESSION SAFE */
-const roomCode = localStorage.getItem("roomCode");
-const playerId = localStorage.getItem("playerId");
+// REMOVE THIS CHECK FOR NOW (this may block page)
+// const roomCode = localStorage.getItem("roomCode");
+// const playerId = localStorage.getItem("playerId");
 
-if(!roomCode || !playerId){
-  window.location.href="lobby.html";
-}
+// if(!roomCode || !playerId){
+//   window.location.href="lobby.html";
+// }
 
-/* LOGIC */
+// SAFE SCORE
+let score = Number(localStorage.getItem("score") || 0);
+
 let locked = false;
 
 function selectPlace(choice){
+
   if(locked) return;
   locked = true;
 
-  console.log("ROOM:",roomCode);
-  console.log("PLAYER:",playerId);
-  console.log("PLACE:",choice);
+  // store answer
+  localStorage.setItem("q3_place", choice);
 
-  setTimeout(()=>{
-    window.location.href="movie.html";
-  },700);
+  // +1 score
+  score++;
+  localStorage.setItem("score", score);
+
+  console.log("CHOICE:",choice);
+  console.log("SCORE:",score);
+
+  // ⛔ IMPORTANT — check file name
+  window.location.href = "movie.html";
 }
 
-/* SPARKLES */
+// sparkles
 for(let i=0;i<25;i++){
   const s=document.createElement("div");
   s.className="spark";

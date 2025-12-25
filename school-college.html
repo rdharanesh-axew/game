@@ -22,7 +22,6 @@ body{
   color:white;
 }
 
-/* TOP TITLE */
 .title{
   text-align:center;
   margin-top:30px;
@@ -32,7 +31,6 @@ body{
   text-shadow:0 0 20px #ff5fbf;
 }
 
-/* QUESTION COUNT */
 .counter{
   position:absolute;
   top:30px;
@@ -43,7 +41,6 @@ body{
   font-size:14px;
 }
 
-/* GAME AREA */
 .game-area{
   height:80%;
   display:flex;
@@ -52,7 +49,6 @@ body{
   gap:80px;
 }
 
-/* IMAGE CARD */
 .choice-card{
   width:320px;
   height:420px;
@@ -74,7 +70,6 @@ body{
   box-shadow:0 0 55px #ff5fbf;
 }
 
-/* CENTER HEART TEXT */
 .center-heart{
   position:absolute;
   top:50%;
@@ -94,7 +89,6 @@ body{
   color:#ccc;
 }
 
-/* FLOATING HEARTS */
 .heart{
   position:absolute;
   bottom:-30px;
@@ -109,7 +103,6 @@ body{
   to{transform:translateY(-120vh);opacity:0;}
 }
 
-/* MOBILE */
 @media(max-width:768px){
   .game-area{
     flex-direction:column;
@@ -126,7 +119,7 @@ body{
 <body>
 
 <div class="title">WHICH ONE DO YOU PREFER?</div>
-<div class="counter">Question 6 / 13</div>
+<div class="counter">Question 10 / 10</div>
 
 <div class="center-heart">
   <div class="big">❤️ WHICH ONE DO YOU PREFER?</div>
@@ -154,9 +147,10 @@ if(!roomCode || !playerId){
   window.location.href="lobby.html";
 }
 
-/* GAME LOGIC */
+/* CLICK LOCK */
 let locked = false;
 
+/* CHOICE LOGIC */
 function choose(choice){
   if(locked) return;
   locked = true;
@@ -165,8 +159,12 @@ function choose(choice){
   console.log("PLAYER:",playerId);
   console.log("CHOICE:",choice);
 
+  /* OPTIONAL: Save to localStorage if needed */
+  localStorage.setItem("q10_schoolCollege", choice);
+
+  // GO TO RESULT PAGE
   setTimeout(()=>{
-    window.location.href="icecream.html";
+    window.location.href="result.html";
   },700);
 }
 

@@ -32,10 +32,11 @@ body{
   text-shadow:0 0 20px #ff5fbf;
 }
 
-.sub{
+/* ===== QUESTION COUNT ===== */
+.counter{
   text-align:center;
-  color:#ccc;
   margin-top:5px;
+  color:#ccc;
   font-size:16px;
 }
 
@@ -50,8 +51,8 @@ body{
 
 /* ===== MUSIC CARD ===== */
 .music-card{
-  width:340px;
-  height:220px;
+  width:360px;
+  height:300px;   /* 🔥 BIGGER SIZE */
   border-radius:25px;
   overflow:hidden;
   cursor:pointer;
@@ -69,17 +70,6 @@ body{
 .music-card:hover{
   transform:scale(1.1);
   box-shadow:0 0 55px #ff5fbf;
-}
-
-/* ===== LABEL ===== */
-.label{
-  position:absolute;
-  bottom:10px;
-  width:100%;
-  text-align:center;
-  font-size:22px;
-  font-weight:600;
-  text-shadow:0 0 12px black;
 }
 
 /* ===== FLOATING MUSIC SYMBOL ===== */
@@ -121,7 +111,7 @@ body{
   }
   .music-card{
     width:90%;
-    height:220px;
+    height:260px;
   }
 }
 </style>
@@ -130,32 +120,55 @@ body{
 <body>
 
 <div class="title">WHICH ONE DO YOU PREFER?</div>
-<div class="sub">pick the same as your friend to score</div>
+
+<!-- ⭐ FIXED QUESTION COUNTER -->
+<div class="counter">Question 5 / 10</div>
+
+<div class="sub" style="text-align:center;color:#ccc;margin-top:5px;font-size:16px;">
+  pick the same as your friend to score
+</div>
 
 <div class="game-area">
 
   <!-- MUSIC OPTION A -->
   <div class="music-card" onclick="chooseMusic('A')">
     <img src="assets/music1.jpg">
-    <div class="label">Option A</div>
   </div>
 
   <!-- MUSIC OPTION B -->
   <div class="music-card" onclick="chooseMusic('B')">
     <img src="assets/music2.jpg">
-    <div class="label">Option B</div>
   </div>
 
 </div>
 
 <script>
-/* ===== SELECT ===== */
+// ------------ SCORE SAFE -------------
+let score = Number(localStorage.getItem("score") || 0);
+
+// ------------ MUSIC SELECT -----------
+let locked = false;
+
 function chooseMusic(choice){
-  alert("You selected " + choice + " 🎵");
-  // next page logic later
+
+  if(locked) return;
+  locked = true;
+
+  // save answer for report
+  localStorage.setItem("q5_music", choice);
+
+  // increase score
+  score++;
+  localStorage.setItem("score", score);
+
+  console.log("MUSIC:", choice);
+  console.log("SCORE:", score);
+
+  // go to next page
+  window.location.href = "coffee-dinner.html";
 }
 
-/* ===== FLOATING MUSIC SYMBOLS ===== */
+// -------- FLOATING MUSIC SYMBOLS -----
 function dropMusic(){
   const m = document.createElement("div");
   m.className="music";
