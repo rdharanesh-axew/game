@@ -2,249 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Friendship Result 💖</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Friendship Match Game 💖</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#090014;color:#fff;text-align:center;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:15px}
 
-body{
-  min-height:100vh;
-  background:radial-gradient(circle at top,#3a004d,#000);
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:18px;
-  overflow:hidden;
-}
-
-/* CARD */
-.card{
-  width:100%;
-  max-width:520px;
-  background:rgba(255,255,255,.08);
-  border-radius:30px;
-  padding:28px 22px;
-  text-align:center;
-  box-shadow:0 0 45px rgba(255,95,191,.55);
-  backdrop-filter:blur(6px);
-}
+/* screens */
+.screen{display:none;width:100%;max-width:520px;background:#120033;padding:22px;border-radius:22px;box-shadow:0 0 25px rgba(255,95,191,.4)}
+.active{display:block}
 
 /* Title */
-h1{
-  color:#ff5fbf;
-  font-size:28px;
-  margin-bottom:6px;
-  text-shadow:0 0 18px #ff5fbf;
-}
+h2{color:#ff5fbf;margin-bottom:10px;text-shadow:0 0 22px #ff5fbf}
 
-/* Heart */
-.bigHeart{
-  font-size:78px;
-  animation:beat 1.2s infinite;
-  margin:10px 0 10px;
-  cursor:pointer;
-  transition:.25s;
-}
-.bigHeart:hover{transform:scale(1.25)}
-@keyframes beat{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.25)}
-  100%{transform:scale(1)}
-}
+/* cards */
+.option{background:#ff5fbf;margin:10px 0;padding:14px;border-radius:16px;color:#000;font-weight:700;cursor:pointer;transition:.25s}
+.option:hover{transform:scale(1.05);background:#fff}
 
-/* Score */
-.score{
-  font-size:18px;
-  margin-top:5px;
-}
-.score span{
-  color:#ff5fbf;
-  font-weight:700;
-}
-
-/* Percent */
-.percent{
-  font-size:44px;
-  font-weight:700;
-  margin:10px 0 15px;
-  text-shadow:0 0 15px #ff5fbf;
-}
-
-/* Quotes */
-.quote{
-  font-size:20px;
-  margin-top:10px;
-  font-weight:700;
-  text-align:center;
-  background:linear-gradient(135deg,#ff5fbf,#ffd6ff,#9b5cff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:0 0 18px rgba(255,95,191,.45);
-  letter-spacing:0.5px;
-  line-height:1.5;
-  transition:.4s ease;
-}
-.quote:hover{
-  transform:scale(1.05);
-  text-shadow:0 0 25px rgba(255,95,191,.85);
-}
+/* Result */
+.match{color:#71ff71;font-weight:700}
+.nomatch{color:#ff6f6f;font-weight:700}
+table{width:100%;margin-top:15px;border-collapse:collapse}
+td,th{padding:6px}
 
 /* Buttons */
-.buttons{
-  display:flex;
-  gap:14px;
-  justify-content:center;
-}
-button{
-  padding:10px 22px;
-  border-radius:24px;
-  font-weight:600;
-  border:none;
-  cursor:pointer;
-  transition:.3s;
-}
+button{margin-top:15px;padding:10px 20px;border-radius:20px;border:none;cursor:pointer;font-weight:700}
 .play{background:#ff5fbf;color:#000}
-.play:hover{background:#fff}
-.home{background:transparent;border:2px solid #ff5fbf;color:#ff5fbf}
-.home:hover{background:#ff5fbf;color:#000}
-
-/* Floating hearts */
-.heart{
-  position:fixed;
-  bottom:-30px;
-  font-size:20px;
-  color:#ff5fbf;
-  animation:floatUp linear infinite;
-  pointer-events:none;
-  opacity:.9;
-}
-@keyframes floatUp{
-  from{transform:translateY(0);opacity:1}
-  to{transform:translateY(-120vh);opacity:0}
-}
-
-/* Mobile tweaks */
-@media(max-width:480px){
-  .card{padding:22px 16px}
-  .percent{font-size:38px}
-}
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h1>Your Friendship Result 💖</h1>
+<div id="gameScreen" class="screen active">
+  <h2 id="title">Player 1 — Choose Option</h2>
+  <p id="count">Question 1 / 10</p>
 
-  <div class="bigHeart">❤️</div>
-
-  <div class="score">
-    Score : <span id="score">0</span> / <span id="total">10</span>
-  </div>
-
-  <div class="percent" id="percent">0%</div>
-
-  <div class="quote" id="quote">Loading...</div>
-
-  <div class="buttons">
-    <button class="play" onclick="playAgain()">Play Again</button>
-    <button class="home" onclick="goHome()">Home</button>
-  </div>
+  <div class="option" onclick="choose('A')">🍕 Option A</div>
+  <div class="option" onclick="choose('B')">🍔 Option B</div>
+  <div class="option" onclick="choose('C')">🌭 Option C</div>
+  <div class="option" onclick="choose('D')">🍟 Option D</div>
 </div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-const firebaseConfig = {  /* YOUR CONFIG */ };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+<div id="resultScreen" class="screen">
+  <h2>Friendship Match Result 💖</h2>
+  <h1 id="percent">0%</h1>
 
-const totalQuestions = 10;  // 🔴 இதை real count-க்கு match பண்ணணும்
+  <table id="table"></table>
 
-const p1 = document.getElementById("p1score");
-const p2 = document.getElementById("p2score");
-
-onValue(ref(db,"game/player1/score"), snap=>{
-   const s = snap.val() || 0;
-   const percent = Math.round((s / totalQuestions) * 100);
-   p1.innerText = `Player 1 : ${percent}%`;
-});
-
-onValue(ref(db,"game/player2/score"), snap=>{
-   const s = snap.val() || 0;
-   const percent = Math.round((s / totalQuestions) * 100);
-   p2.innerText = `Player 2 : ${percent}%`;
-});
-</script>
+  <button class="play" onclick="restart()">Play Again</button>
+</div>
 
 <script>
-let score = Number(localStorage.getItem("score"));
-let total = Number(localStorage.getItem("total"));
+// ------------------ DATA ------------------
+let p1 = JSON.parse(localStorage.getItem("player1")) || [];
+let p2 = JSON.parse(localStorage.getItem("player2")) || [];
+let current = localStorage.getItem("currentPlayer") || "1";
+let total = 10;
 
-// safety
-if(isNaN(score)) score = 0;
-if(isNaN(total) || total<=0) total = 10;
+// ------------------ GAME UI ------------------
+function updateUI(){
+  document.getElementById("title").innerText =
+    current==="1" ? "Player 1 — Choose Option" : "Player 2 — Choose Option";
 
-// clamp
-if(score < 0) score = 0;
-if(score > total) score = total;
+  let c = current==="1" ? p1.length : p2.length;
+  document.getElementById("count").innerText = "Question "+(c+1)+" / "+total;
+}
+updateUI();
 
-// percent
-let percent = Math.round((score/total)*100);
-if(percent>100) percent = 100;
-if(percent<0) percent = 0;
+// ------------------ CHOOSE ------------------
+function choose(val){
 
-// show UI
-document.getElementById("score").innerText = score;
-document.getElementById("total").innerText = total;
-document.getElementById("percent").innerText = percent + "%";
+  if(current==="1"){
+    if(p1.length>=10) return;
+    p1.push(val);
+    localStorage.setItem("player1",JSON.stringify(p1));
+    if(p1.length===10){
+      current="2";
+      localStorage.setItem("currentPlayer","2");
+      alert("Player 2 turn starts!");
+    }
+  }
 
-// debug — இதை வைத்து check பண்ணலாம்
-console.log("SCORE =",score);
-console.log("TOTAL =",total);
-console.log("PERCENT =",percent);
-</script>
-<script>
+  else{
+    if(p2.length>=10) return;
+    p2.push(val);
+    localStorage.setItem("player2",JSON.stringify(p2));
+    if(p2.length===10){
+      showResult();
+      return;
+    }
+  }
+  updateUI();
+}
 
-// QUOTES
-const quotes = [
-"✨ Vibes speak louder than words 🤙",
-"📸 Soul clicks, not just pics 💛",
-"🔥 Besties = Mood lifters 24/7 💖",
-"💭 We don’t just talk — we feel 💫",
-"🌪️ Friends turn chaos into glitter ✨💎",
-"💌 Heart-to-heart, no WiFi needed 🌌",
-"💎 Friendship is the real flex 😎❤️",
-"🚀 We vibe, we ride, we glow 🌟💛",
-"🪐 Soulmates aren’t only lovers 💫👯",
-"🌈 With a true friend even silence speaks 💖"
-];
+// ------------------ RESULT ------------------
+function showResult(){
 
-// Select quote by % range
-let quoteText = "";
-if(percent>=90) quoteText = quotes[0];
-else if(percent>=70) quoteText = quotes[2];
-else if(percent>=50) quoteText = quotes[4];
-else quoteText = quotes[7];
+  document.getElementById("gameScreen").classList.remove("active");
+  document.getElementById("resultScreen").classList.add("active");
 
-document.getElementById("quote").innerText = quoteText;
+  let matches = 0;
+  let html = "<tr><th>#</th><th>Player 1</th><th>Player 2</th><th>Status</th></tr>";
 
-// Buttons
-function goHome(){ window.location.href="index.html"; }
-function playAgain(){ window.location.href="lobby.html"; }
+  for(let i=0;i<total;i++){
+    let a = p1[i] || "-";
+    let b = p2[i] || "-";
+    let ok = (a===b);
+    if(ok) matches++;
 
-// Floating hearts
-for(let i=0;i<25;i++){
-  let h=document.createElement("div");
-  h.className="heart";
-  h.innerHTML="❤";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=4+Math.random()*6+"s";
-  document.body.appendChild(h);
+    html += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${a}</td>
+        <td>${b}</td>
+        <td class="${ok?'match':'nomatch'}">${ok?'Match ❤️':'No Match'}</td>
+      </tr>
+    `;
+  }
+
+  document.getElementById("table").innerHTML = html;
+
+  let percent = Math.round((matches/total)*100);
+  document.getElementById("percent").innerText = percent+"%";
+}
+
+// ------------------ RESET ------------------
+function restart(){
+  localStorage.removeItem("player1");
+  localStorage.removeItem("player2");
+  localStorage.setItem("currentPlayer","1");
+  location.reload();
 }
 </script>
 
