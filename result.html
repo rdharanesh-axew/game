@@ -155,6 +155,31 @@ button{
     <button class="home" onclick="goHome()">Home</button>
   </div>
 </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {  /* YOUR CONFIG */ };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const totalQuestions = 10;  // 🔴 இதை real count-க்கு match பண்ணணும்
+
+const p1 = document.getElementById("p1score");
+const p2 = document.getElementById("p2score");
+
+onValue(ref(db,"game/player1/score"), snap=>{
+   const s = snap.val() || 0;
+   const percent = Math.round((s / totalQuestions) * 100);
+   p1.innerText = `Player 1 : ${percent}%`;
+});
+
+onValue(ref(db,"game/player2/score"), snap=>{
+   const s = snap.val() || 0;
+   const percent = Math.round((s / totalQuestions) * 100);
+   p2.innerText = `Player 2 : ${percent}%`;
+});
+</script>
 
 <script>
 // Get values
@@ -167,6 +192,7 @@ if (score > total) score = total;
 if (score < 0) score = 0;
 
 // Percent
+let percentage = (score / total) * 100;
 let percent = Math.round((score / total) * 100);
 if (percent > 100) percent = 100;
 if (percent < 0) percent = 0;
