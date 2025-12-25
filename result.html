@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your Result 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -40,13 +40,13 @@ body{
 
 /* CARD */
 .card{
-  width:90%;
+  width:92%;
   max-width:520px;
   background:rgba(255,255,255,.08);
   border-radius:30px;
-  padding:35px 30px;
+  padding:30px 22px;
   text-align:center;
-  box-shadow:0 0 60px rgba(255,95,191,.55);
+  box-shadow:0 0 55px rgba(255,95,191,.55);
   animation:pop .8s ease;
 }
 @keyframes pop{
@@ -56,7 +56,7 @@ body{
 
 /* TITLE */
 .title{
-  font-size:34px;
+  font-size:30px;
   font-weight:700;
   color:#ff5fbf;
   text-shadow:0 0 25px #ff5fbf;
@@ -64,12 +64,13 @@ body{
 
 /* HEART */
 .center-heart{
-  font-size:80px;
-  margin:20px 0;
+  font-size:90px;
+  margin:16px 0;
   animation:beat 1.3s infinite;
   cursor:pointer;
+  transition:.3s;
 }
-.center-heart:hover{ transform:scale(1.25); }
+.center-heart:hover{transform:scale(1.25);}
 @keyframes beat{
   0%{transform:scale(1)}
   50%{transform:scale(1.25)}
@@ -77,32 +78,38 @@ body{
 }
 
 /* SCORE */
-.score{ font-size:20px; color:#ddd; }
-.score span{ color:#ff5fbf; font-weight:700; }
+.score{
+  font-size:19px;
+  color:#ddd;
+}
+.score span{color:#ff5fbf;font-weight:700;}
 
 /* PERCENT */
 .percent{
-  font-size:48px;
+  font-size:50px;
   font-weight:700;
-  margin:18px 0;
-  text-shadow:0 0 20px #ff5fbf;
+  margin:14px 0;
+  text-shadow:0 0 18px #ff5fbf;
 }
 
 /* QUOTE */
 .quote{
-  font-size:18px;
-  margin-bottom:28px;
-  color:#f2f2f2;
+  font-size:17px;
+  margin-bottom:22px;
+  background:linear-gradient(135deg,#ff5fbf,#ffd6f3);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-weight:600;
 }
 
 /* BUTTONS */
 .buttons{
   display:flex;
-  gap:18px;
+  gap:12px;
   justify-content:center;
 }
 button{
-  padding:12px 28px;
+  padding:12px 26px;
   border:none;
   border-radius:25px;
   font-size:15px;
@@ -114,7 +121,7 @@ button{
   background:#ff5fbf;
   color:#000;
 }
-.play:hover{ background:white; }
+.play:hover{background:white;}
 .home{
   background:transparent;
   border:2px solid #ff5fbf;
@@ -123,6 +130,16 @@ button{
 .home:hover{
   background:#ff5fbf;
   color:#000;
+}
+
+/* 📱 MOBILE FIX */
+@media (max-width:600px){
+  .card{max-width:95%;padding:24px 16px;}
+  .title{font-size:24px;}
+  .center-heart{font-size:70px;}
+  .percent{font-size:42px;}
+  .quote{font-size:15px;}
+  button{font-size:14px;padding:10px 20px;}
 }
 </style>
 </head>
@@ -143,45 +160,49 @@ button{
   <div class="quote" id="quote">Loading...</div>
 
   <div class="buttons">
-    <button class="play" onclick="goIndex()">Try Again</button>
-    <button class="home" onclick="goIndex()">Home</button>
+    <button class="play" onclick="playAgain()">Play Again</button>
+    <button class="home" onclick="goHome()">Home</button>
   </div>
 </div>
-<!-- ✅ FIREBASE (ONLY THIS) -->
+
+<!-- FIREBASE LIBS (SAFE TO LEAVE) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
-  authDomain: "auraa-love-game.firebaseapp.com",
-  databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
-  projectId: "auraa-love-game",
-  storageBucket: "auraa-love-game.appspot.com",
-  messagingSenderId: "631139663700",
-  appId: "1:631139663700:web:960bee870186a1d5fc12c1"
-};
-
-/* SCORE */
-let score = Number(localStorage.getItem("score")) || 7;
+/* SCORE FROM STORAGE */
+let score = Number(localStorage.getItem("score")) || 0;
 let total = Number(localStorage.getItem("total")) || 10;
-let percent = Math.round((score / total) * 100);
 
 document.getElementById("score").innerText = score;
 document.getElementById("total").innerText = total;
+
+let percent = Math.round((score/total)*100);
 document.getElementById("percent").innerText = percent + "%";
 
-/* QUOTES */
-let q="";
-if(percent>=90) q="💞 Perfect friendship! Forever vibes!";
-else if(percent>=70) q="💖 Strong bond! Lovely connection!";
-else if(percent>=50) q="😊 Nice match! Friendship growing!";
-else q="😄 Cute start! Keep playing!";
-document.getElementById("quote").innerText=q;
+/* 🔥 QUOTES — RANDOM PICK */
+const quotes = [
+ "Vibes speak louder than words. 🤙✨",
+ "Soul clicks, not just pics. 📸💛",
+ "Besties = Mood lifters 24/7 🔥💖",
+ "We don’t just talk, we feel. 💭💫",
+ "Friends turn chaos into glitter. 🌪️✨💎",
+ "Heart-to-heart, no WiFi needed. 💌🌌",
+ "Friendship: the real flex of life. 💎😎❤️",
+ "We vibe, we ride, we glow. 🌟🚀💛",
+ "Soulmates aren't only lovers — some just get your weird. 🪐💫👯",
+ "With a true friend, even silence slaps louder than life. 🤯🌈💖✨"
+];
 
-/* 🔥 REDIRECT FIX 🔥 */
-function goIndex(){
-  window.location.href = "indexl.html"; // EXACT FILE NAME
+document.getElementById("quote").innerText =
+  quotes[Math.floor(Math.random()*quotes.length)];
+
+/* BUTTONS */
+function goHome(){
+  window.location.href="index.html";
+}
+function playAgain(){
+  window.location.href="lobby.html";
 }
 
 /* FLOATING HEARTS */
