@@ -1,44 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Friendship Result 💖</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Friendship Result 💖</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-
 body{
   min-height:100vh;
   background:radial-gradient(circle at top,#3a004d,#000);
+  color:#fff;
   display:flex;
   justify-content:center;
   align-items:center;
-  color:#fff;
   overflow:hidden;
 }
 
-/* CARD */
 .card{
   max-width:520px;
   width:92%;
   background:rgba(255,255,255,.08);
-  padding:28px 22px;
-  border-radius:28px;
+  padding:26px 20px;
+  border-radius:26px;
   text-align:center;
-  box-shadow:0 0 45px rgba(255,95,191,.55);
+  box-shadow:0 0 45px rgba(255,95,191,.5);
 }
 
-/* Title */
 h1{
   color:#ff5fbf;
   text-shadow:0 0 18px #ff5fbf;
-  margin-bottom:6px;
 }
 
-/* Heart */
 .bigHeart{
-  font-size:86px;
+  font-size:80px;
   animation:beat 1.2s infinite;
   margin:10px 0;
 }
@@ -48,31 +45,29 @@ h1{
   100%{transform:scale(1)}
 }
 
-/* Score */
-.score{font-size:18px;margin-top:4px}
-.score span{color:#ff5fbf;font-weight:700}
+.score{
+  font-size:20px;
+  margin-top:6px;
+}
+.score span{
+  color:#ff5fbf;
+  font-weight:700;
+}
 
-/* Percent */
 .percent{
-  font-size:48px;
-  margin:12px 0 16px;
-  font-weight:800;
+  font-size:44px;
+  margin:10px 0 14px;
+  font-weight:700;
   text-shadow:0 0 15px #ff5fbf;
 }
 
-/* Quote — styled & glowing */
 .quote{
-  font-size:19px;
-  color:#ffe4ff;
-  margin:8px 0 22px;
-  padding:12px 14px;
-  background:rgba(255,255,255,.09);
-  border-radius:16px;
-  border:1px solid rgba(255,95,191,.35);
-  text-shadow:0 0 16px rgba(255,95,191,.65);
+  font-size:18px;
+  color:#ffdfff;
+  margin-bottom:20px;
+  text-shadow:0 0 18px rgba(255,95,191,.6);
 }
 
-/* Buttons */
 .buttons{display:flex;gap:14px;justify-content:center}
 button{
   padding:10px 22px;
@@ -85,11 +80,10 @@ button{
 .home{background:transparent;border:2px solid #ff5fbf;color:#ff5fbf}
 .home:hover{background:#ff5fbf;color:#000}
 
-/* Floating Hearts */
 .heart{
   position:fixed;
   bottom:-30px;
-  font-size:24px;
+  font-size:22px;
   color:#ff5fbf;
   animation:floatUp linear infinite;
   opacity:.9;
@@ -110,7 +104,7 @@ button{
   <div class="bigHeart">❤️</div>
 
   <div class="score">
-    Score : <span id="score">0</span> / <span id="total">10</span>
+    Score : <span id="score">0</span> / 10
   </div>
 
   <div class="percent" id="percent">0%</div>
@@ -125,50 +119,53 @@ button{
 </div>
 
 <script>
-// -------- GET DATA FROM URL ----------
-const params = new URLSearchParams(window.location.search);
-let score = Number(params.get("score")) || 0;
-let percent = Number(params.get("percent")) || 0;
+// ---------- READ PLAYER ANSWERS ----------
+let p1 = JSON.parse(localStorage.getItem("p1Answers")) || [];
+let p2 = JSON.parse(localStorage.getItem("p2Answers")) || [];
+
 let total = 10;
+let score = 0;
 
-// ---- Clamp values ----
-if(score<0) score=0;
-if(score>total) score=total;
-if(percent<0) percent=0;
-if(percent>100) percent=100;
+// ---------- COMPARE ----------
+for(let i=0;i<total;i++){
+   if(p1[i] == p2[i]) score++;
+}
 
-// ---- Show on screen ----
+// ---------- PERCENT ----------
+let percent = Math.round((score / total) * 100);
+
+// ---------- SHOW ----------
 document.getElementById("score").innerText = score;
-document.getElementById("total").innerText = total;
 document.getElementById("percent").innerText = percent + "%";
 
-// -------- QUOTES (trendy 2025 😎) ------
-const quotes = [
- "Our vibe matched like magic ✨💞",
- "Two hearts — one wavelength 💫❤️",
- "Friendship level 🔥 100% feelings",
- "Silence also talks between us 💌",
- "We glow together, not alone 🌟",
- "This bond runs deeper than words 💖",
- "Your energy fits my soul 💫",
- "Pure connection — zero drama 💎",
- "Some people feel like home 🏡❤️",
- "We don't match — we *sync* 😎✨"
+// ---------- QUOTES ----------
+const quotes=[
+"Vibes speak louder than words 🤙✨",
+"Soul clicks — not just pics 💛",
+"Besties are pure magic 🎉",
+"We don’t talk — we connect 💫",
+"Chaos turns to glitter ✨",
+"Heart talks louder 💌",
+"Friendship is the real flex 😎",
+"We glow together 🌟",
+"Soul friends exist 💖",
+"Even silence speaks 🌈"
 ];
-
-// percent-based message tweak
-let q = quotes[Math.floor(Math.random()*quotes.length)];
-if(percent === 100) q = "Perfect Soul Sync 💯💖";
-else if(percent >= 70) q = "Golden Level Match ✨💛";
-
-document.getElementById("quote").innerText = q;
+document.getElementById("quote").innerText =
+quotes[Math.floor(Math.random()*quotes.length)];
 
 // ---------- BUTTONS ----------
-function playAgain(){ window.location.href="lobby.html"; }
-function goHome(){ window.location.href="index.html"; }
+function playAgain(){
+   localStorage.clear();
+   window.location.href="lobby.html";
+}
+function goHome(){
+   localStorage.clear();
+   window.location.href="index.html";
+}
 
-// -------- HEART FLOAT EFFECT ----------
-for(let i=0;i<28;i++){
+// ---------- HEARTS ----------
+for(let i=0;i<25;i++){
  let h=document.createElement("div");
  h.className="heart";
  h.innerHTML="❤";
