@@ -170,6 +170,33 @@ for(let i=0;i<22;i++){
   document.body.appendChild(h);
 }
 </script>
+<script>
+// Save Player Score
+function savePlayerScore(player, score){
+  localStorage.setItem(player + "_score", score);
+  localStorage.setItem(player + "_done", "yes");
+}
+
+// Get Score
+function getScore(player){
+  return Number(localStorage.getItem(player + "_score") || 0);
+}
+
+// Check finished
+function isFinished(player){
+  return localStorage.getItem(player + "_done") === "yes";
+}
+import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const store = getDatabase();
+
+function updateScore(code, player, score){
+   update(ref(store, `rooms/${code}/${player}`),{
+      score: score
+   });
+}
+</script>
+
 
 </body>
 </html>

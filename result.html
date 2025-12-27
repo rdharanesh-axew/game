@@ -173,6 +173,45 @@ for(let i=0;i<25;i++){
  h.style.animationDuration=4+Math.random()*6+"s";
  document.body.appendChild(h);
 }
+import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const store = getDatabase();
+
+function updateScore(code, player, score){
+   update(ref(store, `rooms/${code}/${player}`),{
+      score: score
+   });
+}
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const db = getDatabase();
+
+async function loadScores(code){
+   const snap = await get(ref(db, "rooms/" + code));
+
+   if(snap.exists()){
+      const data = snap.val();
+
+      const s1 = data.p1.score || 0;
+      const s2 = data.p2.score || 0;
+
+      document.getElementById("p1score").innerText = s1;
+      document.getElementById("p2score").innerText = s2;
+
+      showResult(s1,s2);
+   }
+}
+
+function showResult(s1,s2){
+   let msg="";
+
+   if(s1 > s2) msg="Player 1 Wins 🎉";
+   else if(s2 > s1) msg="Player 2 Wins 🏆";
+   else msg="Match Draw 🤝";
+
+   document.getElementById("result").innerText = msg;
+}
+
 </script>
 
 </body>

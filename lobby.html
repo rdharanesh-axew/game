@@ -94,22 +94,28 @@ for(let i=0;i<18;i++){
 </div>
 
 <!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
-  authDomain: "auraa-love-game.firebaseapp.com",
-  databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
-  projectId: "auraa-love-game",
-  storageBucket: "auraa-love-game.appspot.com",
-  messagingSenderId: "631139663700",
-  appId: "1:631139663700:web:960bee870186a1d5fc12c1"
-};
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
+    authDomain: "auraa-love-game.firebaseapp.com",
+    databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
+    projectId: "auraa-love-game",
+    storageBucket: "auraa-love-game.firebasestorage.app",
+    messagingSenderId: "631139663700",
+    appId: "1:631139663700:web:19acff37da1aba02fc12c1"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
 </script>
 
 <script>
@@ -194,6 +200,66 @@ function continueGame(){
       window.location.href="waiting.html";
     });
   });
+}
+</script>
+<script>
+function joinAsPlayer1(){
+ localStorage.setItem("roomCode", document.getElementById("room").value);
+ localStorage.setItem("player","player1");
+ window.location.href="game.html";
+}
+
+function joinAsPlayer2(){
+ localStorage.setItem("roomCode", document.getElementById("room").value);
+ localStorage.setItem("player","player2");
+ window.location.href="game.html";
+}
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const db = getDatabase();
+
+function createRoom(code){
+   set(ref(db, "rooms/" + code), {
+      p1:{ score:0 },
+      p2:{ score:0 },
+      resultCalculated:false
+   });
+}
+
+</script>
+
+
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lobby</title>
+</head>
+<body>
+
+<h2>Enter Room Code</h2>
+
+<input id="room" placeholder="Room Code">
+
+<br><br>
+
+<button onclick="joinP1()">Join as Player 1</button>
+<button onclick="joinP2()">Join as Player 2</button>
+
+<script>
+function joinP1(){
+   let room = document.getElementById("room").value;
+   localStorage.setItem("room", room);
+   localStorage.setItem("player", "p1");
+   window.location.href="game.html";
+}
+
+function joinP2(){
+   let room = document.getElementById("room").value;
+   localStorage.setItem("room", room);
+   localStorage.setItem("player", "p2");
+   window.location.href="game.html";
 }
 </script>
 
