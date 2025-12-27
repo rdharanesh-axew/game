@@ -97,25 +97,20 @@ for(let i=0;i<18;i++){
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
-    authDomain: "auraa-love-game.firebaseapp.com",
-    databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
-    projectId: "auraa-love-game",
-    storageBucket: "auraa-love-game.firebasestorage.app",
-    messagingSenderId: "631139663700",
-    appId: "1:631139663700:web:19acff37da1aba02fc12c1"
-  };
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
+  authDomain: "auraa-love-game.firebaseapp.com",
+  databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
+  projectId: "auraa-love-game",
+  storageBucket: "auraa-love-game.appspot.com",
+  messagingSenderId: "631139663700",
+  appId: "1:631139663700:web:960bee870186a1d5fc12c1"
+};
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 </script>
 
 <script>
@@ -214,18 +209,6 @@ function joinAsPlayer2(){
  localStorage.setItem("player","player2");
  window.location.href="game.html";
 }
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-const db = getDatabase();
-
-function createRoom(code){
-   set(ref(db, "rooms/" + code), {
-      p1:{ score:0 },
-      p2:{ score:0 },
-      resultCalculated:false
-   });
-}
-
 </script>
 
 
