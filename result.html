@@ -18,80 +18,28 @@ body{
   align-items:center;
   overflow:hidden;
 }
-
 .card{
-  max-width:520px;
-  width:92%;
+  max-width:520px;width:92%;
   background:rgba(255,255,255,.08);
-  padding:26px 20px;
-  border-radius:26px;
+  padding:26px 20px;border-radius:26px;
   text-align:center;
   box-shadow:0 0 45px rgba(255,95,191,.5);
 }
-
-h1{
-  color:#ff5fbf;
-  text-shadow:0 0 18px #ff5fbf;
-}
-
-.bigHeart{
-  font-size:80px;
-  animation:beat 1.2s infinite;
-  margin:10px 0;
-}
-@keyframes beat{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.25)}
-  100%{transform:scale(1)}
-}
-
-.score{
-  font-size:20px;
-  margin-top:6px;
-}
-.score span{
-  color:#ff5fbf;
-  font-weight:700;
-}
-
-.percent{
-  font-size:44px;
-  margin:10px 0 14px;
-  font-weight:700;
-  text-shadow:0 0 15px #ff5fbf;
-}
-
-.quote{
-  font-size:18px;
-  color:#ffdfff;
-  margin-bottom:20px;
-  text-shadow:0 0 18px rgba(255,95,191,.6);
-}
-
+h1{color:#ff5fbf;text-shadow:0 0 18px #ff5fbf}
+.bigHeart{font-size:80px;animation:beat 1.2s infinite;margin:10px 0}
+@keyframes beat{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+.score{font-size:20px;margin-top:6px}
+.score span{color:#ff5fbf;font-weight:700}
+.percent{font-size:44px;margin:10px 0 14px;font-weight:700;text-shadow:0 0 15px #ff5fbf}
+.quote{font-size:18px;color:#ffdfff;margin-bottom:20px;text-shadow:0 0 18px rgba(255,95,191,.6)}
 .buttons{display:flex;gap:14px;justify-content:center}
-button{
-  padding:10px 22px;
-  border-radius:24px;
-  font-weight:600;
-  border:none;
-  cursor:pointer;
-}
+button{padding:10px 22px;border-radius:24px;font-weight:600;border:none;cursor:pointer}
 .play{background:#ff5fbf;color:#000}
 .home{background:transparent;border:2px solid #ff5fbf;color:#ff5fbf}
 .home:hover{background:#ff5fbf;color:#000}
-
-.heart{
-  position:fixed;
-  bottom:-30px;
-  font-size:22px;
-  color:#ff5fbf;
-  animation:floatUp linear infinite;
-  opacity:.9;
-}
-@keyframes floatUp{
-  from{transform:translateY(0);opacity:1}
-  to{transform:translateY(-120vh);opacity:0}
-}
+.heart{position:fixed;bottom:-30px;font-size:22px;color:#ff5fbf;animation:floatUp linear infinite;opacity:.9}
+@keyframes floatUp{from{transform:translateY(0);opacity:1}to{transform:translateY(-120vh);opacity:0}}
+.nameLine{font-size:18px;margin-bottom:6px}
 </style>
 </head>
 
@@ -99,9 +47,11 @@ button{
 
 <div class="card">
 
-  <h1>Your Friendship Result 💖</h1>
+  <h1 id="title">Your Friendship Result 💖</h1>
 
   <div class="bigHeart">❤️</div>
+
+  <div class="nameLine" id="names">Loading...</div>
 
   <div class="score">
     Score : <span id="score">0</span> / 10
@@ -118,27 +68,40 @@ button{
 
 </div>
 
-<script>
-// ---------- READ PLAYER ANSWERS ----------
-let p1 = JSON.parse(localStorage.getItem("p1Answers")) || [];
-let p2 = JSON.parse(localStorage.getItem("p2Answers")) || [];
+<script type="module">
 
-let total = 10;
-let score = 0;
+/* ---------------- FIREBASE ---------------- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-// ---------- COMPARE ----------
-for(let i=0;i<total;i++){
-   if(p1[i] == p2[i]) score++;
+const firebaseConfig = {
+  apiKey: "AIzaSyAe03MrWOoAWAXgqjtEsb47Aq4obBXWaRY",
+  authDomain: "auraa-love-game.firebaseapp.com",
+  databaseURL: "https://auraa-love-game-default-rtdb.firebaseio.com",
+  projectId: "auraa-love-game",
+  storageBucket: "auraa-love-game.firebasestorage.app",
+  messagingSenderId: "631139663700",
+  appId: "1:631139663700:web:19acff37da1aba02fc12c1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* -------------- LOCAL DATA ---------------- */
+const ROOM = localStorage.getItem("roomCode") || "";
+const ME = localStorage.getItem("player") || "";   // "p1" OR "p2"
+
+/* ---------------- HEART BG ---------------- */
+for(let i=0;i<25;i++){
+ let h=document.createElement("div");
+ h.className="heart";
+ h.innerHTML="❤";
+ h.style.left=Math.random()*100+"vw";
+ h.style.animationDuration=4+Math.random()*6+"s";
+ document.body.appendChild(h);
 }
 
-// ---------- PERCENT ----------
-let percent = Math.round((score / total) * 100);
-
-// ---------- SHOW ----------
-document.getElementById("score").innerText = score;
-document.getElementById("percent").innerText = percent + "%";
-
-// ---------- QUOTES ----------
+/* ----------- QUOTES ----------- */
 const quotes=[
 "Vibes speak louder than words 🤙✨",
 "Soul clicks — not just pics 💛",
@@ -151,65 +114,60 @@ const quotes=[
 "Soul friends exist 💖",
 "Even silence speaks 🌈"
 ];
-document.getElementById("quote").innerText =
-quotes[Math.floor(Math.random()*quotes.length)];
 
-// ---------- BUTTONS ----------
-function playAgain(){
-   localStorage.clear();
-   window.location.href="lobby.html";
-}
-function goHome(){
-   localStorage.clear();
-   window.location.href="index.html";
-}
+/* ---------- LOAD SCORES ---------- */
+async function loadResult(){
 
-// ---------- HEARTS ----------
-for(let i=0;i<25;i++){
- let h=document.createElement("div");
- h.className="heart";
- h.innerHTML="❤";
- h.style.left=Math.random()*100+"vw";
- h.style.animationDuration=4+Math.random()*6+"s";
- document.body.appendChild(h);
-}
-import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-const store = getDatabase();
-
-function updateScore(code, player, score){
-   update(ref(store, `rooms/${code}/${player}`),{
-      score: score
-   });
-}
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-const db = getDatabase();
-
-async function loadScores(code){
-   const snap = await get(ref(db, "rooms/" + code));
-
-   if(snap.exists()){
-      const data = snap.val();
-
-      const s1 = data.p1.score || 0;
-      const s2 = data.p2.score || 0;
-
-      document.getElementById("p1score").innerText = s1;
-      document.getElementById("p2score").innerText = s2;
-
-      showResult(s1,s2);
+   if(!ROOM){
+      alert("Room missing!");
+      return;
    }
+
+   const snap = await get(ref(db, "rooms/"+ROOM));
+
+   if(!snap.exists()){
+      alert("Room not found!");
+      return;
+   }
+
+   const data = snap.val();
+
+   const n1 = data.p1?.name || "Player 1";
+   const n2 = data.p2?.name || "Player 2";
+
+   document.getElementById("names").innerText =
+    n1 + " ❤️ " + n2;
+
+   document.getElementById("title").innerText =
+    n1 + " & " + n2 + " Friendship Bond 💖";
+
+   const s1 = data.p1?.score || 0;
+   const s2 = data.p2?.score || 0;
+
+   const total = 10;
+   const matchScore = Math.min(s1,s2); // OR your match logic
+
+   const percent = Math.round((matchScore/total)*100);
+
+   document.getElementById("score").innerText = matchScore;
+   document.getElementById("percent").innerText = percent + "%";
+   document.getElementById("quote").innerText =
+      quotes[Math.floor(Math.random()*quotes.length)];
+
+   // mark finished
+   await update(ref(db,"rooms/"+ROOM+"/"+ME),{ finished:true });
 }
 
-function showResult(s1,s2){
-   let msg="";
+loadResult();
 
-   if(s1 > s2) msg="Player 1 Wins 🎉";
-   else if(s2 > s1) msg="Player 2 Wins 🏆";
-   else msg="Match Draw 🤝";
-
-   document.getElementById("result").innerText = msg;
+/* ---------- BUTTONS ---------- */
+window.playAgain = function(){
+   localStorage.clear();
+   window.location.href = "lobby.html";
+}
+window.goHome = function(){
+   localStorage.clear();
+   window.location.href = "index.html";
 }
 
 </script>
